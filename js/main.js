@@ -6,12 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
   ].map(([slug, title, tagline, icon]) => ({ slug, title, tagline, icon, real: true }));
 
   const codexGames = [
-    ['snake', 'Neon Snake', 'Eat sparks. Don\u2019t bite your trail.', '🐍'],
-    ['breakout', 'Brick Burst', 'Clear the wall with a ricochet.', '🧱'],
-    ['flappy-clone', 'Sky Hopper', 'Thread the gates.', '🐦'],
-    ['custom-tetris', 'Block Fall', 'Stack, clear, survive.', '🟪'],
+    ['snake', 'Snake', 'Eat sparks. Don\u2019t bite your trail.', '🐍'],
+    ['breakout', 'Breakout', 'Clear the wall with a ricochet.', '🧱'],
+    ['flappy-clone', 'Flappy Bird', 'Thread the gates.', '🐦'],
+    ['custom-tetris', 'Tetris', 'Stack, clear, survive.', '🟪'],
     ['pong', 'Pong', 'A two-paddle classic.', '🏓'],
-    ['tic-tac-toe', 'Three in a Row', 'Take on the arcade brain.', '⭕'],
+    ['tic-tac-toe', 'Tic-Tac-Toe', 'Take on the arcade brain.', '⭕'],
     ['memory-match', 'Memory Match', 'Turn over every pair.', '🃏'],
     ['fighter-lite', 'Duel Lite', 'Couch-versus brawl.', '🥊'],
     ['slot-machine', 'Lucky Lights', 'A tiny purely-for-fun spinner.', '🎰'],
