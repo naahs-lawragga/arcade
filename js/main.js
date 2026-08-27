@@ -1,33 +1,58 @@
 document.addEventListener('DOMContentLoaded', () => {
   const { loadGame, unloadGame } = window.Arcade;
-  const games = [
-    ['snake','Neon Snake','Eat sparks. Don’t bite your trail.','🐍'],
-    ['2048','2048','Slide and combine the tiles.','🔢'],
-    ['breakout','Brick Burst','Clear the wall with a ricochet.','🧱'],
-    ['flappy-clone','Sky Hopper','Thread the gates.','🐦'],
-    ['custom-tetris','Block Fall','Stack, clear, survive.','🟪'],
-    ['pong','Pong','A two-paddle classic.','🏓'],
-    ['tic-tac-toe','Three in a Row','Take on the arcade brain.','⭕'],
-    ['memory-match','Memory Match','Turn over every pair.','🃏'],
-    ['fighter-lite','Duel Lite','Couch-versus brawl.','🥊'],
-    ['slot-machine','Lucky Lights','A tiny purely-for-fun spinner.','🎰'],
-    ['dark-room','Night Watch','Keep the lantern alive.','🕯️'],
-    ['runner','Metro Dash','Jump the incoming blocks.','🏃']
-  ].map(([slug,title,tagline,icon]) => ({ slug, title, tagline, icon }));
+
+  const classicsGames = [
+    ['real-2048', '2048', 'The real thing — official source by Gabriele Cirulli.', '🔢'],
+  ].map(([slug, title, tagline, icon]) => ({ slug, title, tagline, icon, real: true }));
+
+  const codexGames = [
+    ['snake', 'Neon Snake', 'Eat sparks. Don\u2019t bite your trail.', '🐍'],
+    ['breakout', 'Brick Burst', 'Clear the wall with a ricochet.', '🧱'],
+    ['flappy-clone', 'Sky Hopper', 'Thread the gates.', '🐦'],
+    ['custom-tetris', 'Block Fall', 'Stack, clear, survive.', '🟪'],
+    ['pong', 'Pong', 'A two-paddle classic.', '🏓'],
+    ['tic-tac-toe', 'Three in a Row', 'Take on the arcade brain.', '⭕'],
+    ['memory-match', 'Memory Match', 'Turn over every pair.', '🃏'],
+    ['fighter-lite', 'Duel Lite', 'Couch-versus brawl.', '🥊'],
+    ['slot-machine', 'Lucky Lights', 'A tiny purely-for-fun spinner.', '🎰'],
+    ['dark-room', 'Night Watch', 'Keep the lantern alive.', '🕯️'],
+    ['runner', 'Metro Dash', 'Jump the incoming blocks.', '🏃'],
+  ].map(([slug, title, tagline, icon]) => ({ slug, title, tagline, icon, real: false }));
+
+  const games = [...classicsGames, ...codexGames];
 
   const home = document.querySelector('#home-view');
   const play = document.querySelector('#play-view');
-  const grid = document.querySelector('#game-grid');
+  const classicsGrid = document.querySelector('#classics-grid');
+  const codexGrid = document.querySelector('#codex-grid');
   const stage = document.querySelector('#game-stage');
   const title = document.querySelector('#game-title');
 
+  function cardHTML(g) {
+    return `<article class="game-card">
+      ${g.real ? '<span class="badge-real">REAL GAME</span>' : ''}
+      <div class="game-icon" aria-hidden="true">${g.icon}</div>
+      <h2>${g.title}</h2>
+      <p>${g.tagline}</p>
+      <button class="play-button" data-game="${g.slug}">Play</button>
+    </article>`;
+  }
+
+  function renderGrid(container, list) {
+    container.innerHTML = list.map(cardHTML).join('');
+    container.querySelectorAll('button').forEach(button =>
+      button.addEventListener('click', () => open(button.dataset.game))
+    );
+  }
+
   function render() {
-    grid.innerHTML = games.map(g => `<article class="game-card"><div class="game-icon" aria-hidden="true">${g.icon}</div><h2>${g.title}</h2><p>${g.tagline}</p><button class="play-button" data-game="${g.slug}">Play</button></article>`).join('');
-    grid.querySelectorAll('button').forEach(button => button.addEventListener('click', () => open(button.dataset.game)));
+    renderGrid(classicsGrid, classicsGames);
+    renderGrid(codexGrid, codexGames);
   }
 
   async function open(slug) {
     const game = games.find(g => g.slug === slug);
+    if (!game) return;
     home.hidden = true;
     play.hidden = false;
     title.textContent = game.title;

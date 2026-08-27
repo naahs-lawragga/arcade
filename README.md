@@ -58,6 +58,14 @@ The requested title search was performed before deciding what to include. **No r
 - `js/shared/storage.js` persists each game’s best score with namespaced `localStorage` keys.
 - Each `games/<slug>/index.js` exports `init(container)` and returns `{ destroy() }`.
 
+## Curated Classics
+
+| Game | Source | License | Notes |
+| --- | --- | --- | --- |
+| 2048 | [gabrielecirulli/2048](https://github.com/gabrielecirulli/2048) | MIT | Real upstream source, adapted to mount into this shell's `init(host)`/`destroy()` interface. Styling scoped to a `.real2048-root` wrapper instead of `html, body` so it doesn't leak into the rest of the site. |
+
+More verified-license games will be added to this section over time.
+
 ## Project license
 
-The original Arcade hub code in this folder is released under the MIT License. The playable games are original work for this project, not ports of the surveyed repositories.
+The original Arcade hub code in this folder is released under the MIT License. The "Codex Originals" games are original work for this project, not ports of the surveyed repositories. The "Curated Classics" games are real third-party open-source code, used and adapted under their original licenses (credited above and in-game).

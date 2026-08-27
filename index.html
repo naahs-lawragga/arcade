@@ -3,15 +3,49 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Arcade — play in your browser</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css"><link rel="stylesheet" href="css/game-shell.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕹️</text></svg>">
 </head>
 <body>
   <main class="site-shell">
     <section id="home-view" aria-labelledby="arcade-title">
-      <header class="hero"><p class="eyebrow">LOCAL • INSTANT • NO EMBEDS</p><h1 id="arcade-title">ARCADE</h1><p>Small, bright games that start right here.</p></header>
-      <div id="game-grid" class="game-grid" aria-live="polite"></div>
+      <nav class="topnav">
+        <div class="brand">
+          <span class="brand-mark">🕹️</span>
+          <span class="brand-name">ARCADE</span>
+        </div>
+        <div class="nav-links">
+          <a href="#classics-section">Curated Classics</a>
+          <a href="#codex-section">Codex Originals</a>
+        </div>
+      </nav>
+
+      <header class="hero">
+        <p class="eyebrow">LOCAL • INSTANT • NO EMBEDS</p>
+        <h1 id="arcade-title">ARCADE</h1>
+        <p class="hero-sub">Small, bright games that start right here.</p>
+      </header>
+
+      <section class="game-section" id="classics-section">
+        <div class="section-heading">
+          <h2>Curated Classics</h2>
+          <p>Real open-source games, adapted to run natively in this page.</p>
+        </div>
+        <div id="classics-grid" class="game-grid" aria-live="polite"></div>
+      </section>
+
+      <section class="game-section" id="codex-section">
+        <div class="section-heading">
+          <h2>Codex Originals</h2>
+          <p>Small games built from scratch for this arcade.</p>
+        </div>
+        <div id="codex-grid" class="game-grid" aria-live="polite"></div>
+      </section>
     </section>
+
     <section id="play-view" hidden aria-live="polite">
       <header class="game-bar"><button id="back-button" class="back-button">← Back to Arcade</button><div><p class="eyebrow">NOW PLAYING</p><h2 id="game-title"></h2></div><button id="restart-button" class="restart-button">Restart</button></header>
       <div id="game-stage" class="game-stage"></div>
