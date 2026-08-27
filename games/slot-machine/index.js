@@ -1,3 +1,4 @@
+(function(){
 const{highScore,saveHighScore}=window.ArcadeStorage;
 window.ArcadeGames=window.ArcadeGames||{};window.ArcadeGames['slot-machine']={init(host){host.innerHTML='<div class="game-root dom-game"><div class="game-hud"><span>Wins <strong id="s">0</strong></span><span>Best <strong id="b"></strong></span></div><div class="slot-reels"><div class="reel">🍒</div><div class="reel">🍋</div><div class="reel">⭐</div></div><button class="slot-button">SPIN</button><p class="hint" id="m">For fun only — no money, prizes, or accounts.</p></div>';const reels=[...host.querySelectorAll('.reel')],button=host.querySelector('button'),s=host.querySelector('#s'),b=host.querySelector('#b'),m=host.querySelector('#m'),icons=['🍒','🍋','⭐','🍇','🔔'];let wins=0;b.textContent=highScore('slot-machine');button.onclick=()=>{const out=reels.map(r=>r.textContent=icons[Math.floor(Math.random()*icons.length)]);if(new Set(out).size===1){wins++;s.textContent=wins;b.textContent=saveHighScore('slot-machine',wins);m.textContent='Three alike! Nice spin.'}else m.textContent='Try another spin.'};return{destroy(){button.onclick=null}}}}
-
+})();
