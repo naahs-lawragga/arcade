@@ -208,4 +208,130 @@
 
     const firebaseConfig = {
       apiKey: "AIzaSyDf5Z8jyxVDgPuLxo4ImYBcUwaM6DlDYXM",
-      authDomain: "web-arcade-9d
+      authDomain: "web-arcade-9d87c.firebaseapp.com",
+      projectId: "web-arcade-9d87c",
+      storageBucket: "web-arcade-9d87c.firebasestorage.app",
+      messagingSenderId: "295769001488",
+      appId: "1:295769001488:web:b0971a736f5c0054618495"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Check admin access on load
+    window.addEventListener('DOMContentLoaded', async () => {
+      const currentUser = sessionStorage.getItem('arcade_current_user');
+      if (!currentUser) {
+        alert('Access denied. Please sign in first.');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      if (currentUser !== 'naahs') {
+        try {
+          const userDoc = await getDoc(doc(db, "arcade_users", currentUser));
+          if (!userDoc.exists() || !userDoc.data().isAdmin) {
+            alert('Access denied. Admins only.');
+            window.location.href = 'index.html';
+            return;
+          }
+        } catch (e) {
+          alert('Authorization error.');
+          window.location.href = 'index.html';
+          return;
+        }
+      }
+
+      loadUsers();
+    });
+
+    window.saveAnnouncement = async function() {
+      const text = document.getElementById('announcement-input').value.trim();
+      try {
+        await setDoc(doc(db, "arcade_config", "announcement"), { text });
+        alert('Announcement published successfully!');
+      } catch (err) {
+        console.error(err);
+        alert('Error publishing announcement.');
+      }
+    };
+
+    window.loadUsers = async function() {
+      const tbody = document.getElementById('user-table-body');
+      tbody.innerHTML = '';
+      try {
+        const querySnapshot = await getDocs(collection(db, "arcade_users"));
+        querySnapshot.forEach((document) => {
+          const userData = document.data();
+          const username = document.id;
+
+          const tr = document.createElement('tr');
+          
+          let roleBadge = userData.isAdmin ? '<span class="badge badge-admin">Admin</span>' : '<span class="badge" style="background: rgba(255,255,255,0.05); color: #aaa;">User</span>';
+          let statusBadge = userData.isBanned ? '<span class="badge badge-banned">Banned</span>' : '<span class="badge badge-active">Active</span>';
+
+          tr.innerHTML = `
+            <td style="font-weight: 600;">${username}</td>
+            <td>${roleBadge}</td>
+            <td>${statusBadge}</td>
+            <td>
+              <div class="action-btns">
+                <button onclick="toggleAdmin('${username}', ${!userData.isAdmin})">${userData.isAdmin ? 'Demote' : 'Make Admin'}</button>
+                <button class="btn-danger" onclick="toggleBan('${username}', ${!userData.isBanned})">${userData.isBanned ? 'Unban' : 'Ban'}</button>
+                <button class="btn-danger" onclick="deleteUser('${username}')">Delete</button>
+              </div>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        console.error("Error loading users:", err);
+      }
+    };
+
+    window.toggleAdmin = async function(username, makeAdmin) {
+      if (username === 'naahs' && !makeAdmin) {
+        alert("You cannot remove admin status from the master account.");
+        return;
+      }
+      try {
+        await updateDoc(doc(db, "arcade_users", username), { isAdmin: makeAdmin });
+        loadUsers();
+      } catch (err) {
+        console.error(err);
+        alert('Error updating user role.');
+      }
+    };
+
+    window.toggleBan = async function(username, banStatus) {
+      if (username === 'naahs') {
+        alert("You cannot ban the master account.");
+        return;
+      }
+      try {
+        await updateDoc(doc(db, "arcade_users", username), { isBanned: banStatus });
+        loadUsers();
+      } catch (err) {
+        console.error(err);
+        alert('Error updating ban status.');
+      }
+    };
+
+    window.deleteUser = async function(username) {
+      if (username === 'naahs') {
+        alert("You cannot delete the master account.");
+        return;
+      }
+      if (confirm(`Are you sure you want to delete user "${username}"?`)) {
+        try {
+          await deleteDoc(doc(db, "arcade_users", username));
+          loadUsers();
+        } catch (err) {
+          console.error(err);
+          alert('Error deleting user.');
+        }
+      }
+    };
+  </script>
+</body>
+</html>
