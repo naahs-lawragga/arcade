@@ -1,20 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
   const { loadGame, unloadGame } = window.Arcade;
 
-  // Added custom badge text ('GAME LAUNCHER') as the 5th element for playtropolis
   const classicsGames = [
     ['real-2048', '2048', 'The real thing — official source by Gabriele Cirulli.', '🔢'],
     ['hextris', 'Hextris', 'The real thing — official fast-paced hexagonal puzzle game.', '🔷'],
     ['space-invaders', 'Space Invaders', 'The real thing — classic retro alien defense.', '👾'],
-    ['playtropolis', 'Playtropolis', '100+ Games!', '🌐', 'GAME LAUNCHER'],
-  ].map(([slug, title, tagline, icon, badgeText]) => ({
-    slug,
-    title,
-    tagline,
-    icon,
-    real: true,
-    badgeText: badgeText || 'REAL GAME' // Fallback to 'REAL GAME' if no custom badge is set
-  }));
+  ].map(([slug, title, tagline, icon]) => ({ slug, title, tagline, icon, real: true, badgeText: 'REAL GAME' }));
+
+  const launcherGames = [
+    ['playtropolis', 'Playtropolis', '100+ Games!', '🌐'],
+  ].map(([slug, title, tagline, icon]) => ({ slug, title, tagline, icon, real: true, badgeText: 'GAME LAUNCHER' }));
 
   const codexGames = [
     ['snake', 'Snake', 'Eat sparks. Don’t bite your trail.', '🐍'],
@@ -30,16 +25,16 @@ document.addEventListener('DOMContentLoaded', () => {
     ['runner', 'JagDev Runner', 'Dodge, jump, and dash through the course.', '🏃'],
   ].map(([slug, title, tagline, icon]) => ({ slug, title, tagline, icon, real: false }));
 
-  const games = [...classicsGames, ...codexGames];
+  const games = [...classicsGames, ...launcherGames, ...codexGames];
 
   const home = document.querySelector('#home-view');
   const play = document.querySelector('#play-view');
   const classicsGrid = document.querySelector('#classics-grid');
+  const launchersGrid = document.querySelector('#launchers-grid');
   const codexGrid = document.querySelector('#codex-grid');
   const stage = document.querySelector('#game-stage');
   const title = document.querySelector('#game-title');
 
-  // cardHTML is just the function that generates the HTML for each game card on your homepage grid!
   function cardHTML(g) {
     return `<article class="game-card">
       ${g.real ? `<span class="badge-real">${g.badgeText}</span>` : ''}
@@ -51,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function renderGrid(container, list) {
+    if (!container) return;
     container.innerHTML = list.map(cardHTML).join('');
     container.querySelectorAll('button').forEach(button =>
       button.addEventListener('click', () => open(button.dataset.game))
@@ -59,6 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function render() {
     renderGrid(classicsGrid, classicsGames);
+    renderGrid(launchersGrid, launcherGames);
     renderGrid(codexGrid, codexGames);
   }
 
