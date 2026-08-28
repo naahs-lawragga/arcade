@@ -10,11 +10,14 @@
       canvas.style.maxWidth = '100%';
       canvas.style.display = 'block';
       canvas.style.margin = '0 auto';
+      canvas.style.border = '2px solid rgba(139, 92, 246, 0.3)';
+      canvas.style.borderRadius = '12px';
+      canvas.style.boxShadow = '0 0 20px rgba(139, 92, 246, 0.15)';
       container.appendChild(canvas);
       const ctx = canvas.getContext('2d');
 
       let animId;
-      let gameMode = null; // 'bot' or 'coop'
+      let gameMode = null;
       let p1Y = 160, p2Y = 160;
       let ballX = 350, ballY = 200, ballVX = 4, ballVY = 2.5;
       let p1Score = 0, p2Score = 0;
@@ -46,23 +49,23 @@
       }
 
       function drawMenu() {
-        ctx.fillStyle = '#0f172a';
+        ctx.fillStyle = '#0b0d19';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        ctx.fillStyle = '#fff';
+        ctx.fillStyle = '#f8fafc';
         ctx.textAlign = 'center';
         ctx.font = 'bold 28px sans-serif';
         ctx.fillText('SELECT PONG MODE', canvas.width / 2, 120);
 
-        // Bot Button
-        ctx.fillStyle = '#3b82f6';
+        // Bot Button (Purple)
+        ctx.fillStyle = '#8b5cf6';
         ctx.fillRect(canvas.width / 2 - 120, 180, 240, 45);
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 18px sans-serif';
         ctx.fillText('1 Player (vs Bot)', canvas.width / 2, 208);
 
-        // Co-Op Button
-        ctx.fillStyle = '#10b981';
+        // Co-Op Button (Cyan)
+        ctx.fillStyle = '#06b6d4';
         ctx.fillRect(canvas.width / 2 - 120, 240, 240, 45);
         ctx.fillStyle = '#fff';
         ctx.fillText('2 Players (Local Co-Op)', canvas.width / 2, 268);
@@ -81,10 +84,10 @@
       }
 
       function loop() {
-        ctx.fillStyle = '#0f172a';
+        ctx.fillStyle = '#0b0d19';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+        ctx.strokeStyle = 'rgba(139, 92, 246, 0.2)';
         ctx.setLineDash([6, 6]);
         ctx.beginPath();
         ctx.moveTo(canvas.width / 2, 0);
@@ -92,11 +95,9 @@
         ctx.stroke();
         ctx.setLineDash([]);
 
-        // P1 Movement
         if (keys['KeyW']) p1Y = Math.max(0, p1Y - speed);
         if (keys['KeyS']) p1Y = Math.min(canvas.height - paddleH, p1Y + speed);
 
-        // P2 Movement (Bot vs Co-Op)
         if (gameMode === 'coop') {
           if (keys['ArrowUp']) p2Y = Math.max(0, p2Y - speed);
           if (keys['ArrowDown']) p2Y = Math.min(canvas.height - paddleH, p2Y + speed);
@@ -123,16 +124,27 @@
         if (ballX < 0) { p2Score++; resetBall(); }
         if (ballX > canvas.width) { p1Score++; resetBall(); }
 
-        ctx.fillStyle = '#38bdf8';
+        // P1 Glow (Purple)
+        ctx.fillStyle = '#8b5cf6';
+        ctx.shadowColor = '#8b5cf6';
+        ctx.shadowBlur = 10;
         ctx.fillRect(10, p1Y, paddleW, paddleH);
-        ctx.fillStyle = '#f43f5e';
+
+        // P2 Glow (Cyan)
+        ctx.fillStyle = '#06b6d4';
+        ctx.shadowColor = '#06b6d4';
+        ctx.shadowBlur = 10;
         ctx.fillRect(canvas.width - paddleW - 10, p2Y, paddleW, paddleH);
 
+        // Ball Glow
         ctx.fillStyle = '#fff';
+        ctx.shadowColor = '#fff';
+        ctx.shadowBlur = 8;
         ctx.beginPath();
         ctx.arc(ballX, ballY, 8, 0, Math.PI * 2);
         ctx.fill();
 
+        ctx.shadowBlur = 0;
         ctx.font = 'bold 32px sans-serif';
         ctx.fillText(p1Score, canvas.width / 4, 50);
         ctx.fillText(p2Score, (3 * canvas.width) / 4, 50);
