@@ -6,18 +6,18 @@ document.addEventListener('DOMContentLoaded', () => {
   ].map(([slug, title, tagline, icon]) => ({ slug, title, tagline, icon, real: true }));
 
   const codexGames = [
-    ['snake', 'Snake', 'Eat sparks. Don\u2019t bite your trail.', '🐍'],
-    ['breakout', 'Breakout', 'Clear the wall with a ricochet.', '🧱'],
-    ['flappy-clone', 'Flappy Bird', 'Thread the gates.', '🐦'],
-    ['custom-tetris', 'Tetris', 'Stack, clear, survive.', '🟪'],
-    ['pong', 'Pong', 'A two-paddle classic.', '🏓'],
-    ['tic-tac-toe', 'Tic-Tac-Toe', 'Take on the arcade brain.', '⭕'],
-    ['memory-match', 'Memory Match', 'Turn over every pair.', '🃏'],
-    ['fighter-lite', 'Duel Lite', 'Couch-versus brawl.', '🥊'],
-    ['slot-machine', 'Lucky Lights', 'A tiny purely-for-fun spinner.', '🎰'],
-    ['dark-room', 'Night Watch', 'Keep the lantern alive.', '🕯️'],
-    ['runner', 'Metro Dash', 'Jump the incoming blocks.', '🏃'],
-  ].map(([slug, title, tagline, icon]) => ({ slug, title, tagline, icon, real: false }));
+  ['snake', 'Snake', 'Eat sparks. Don’t bite your trail.', '🐍'],
+  ['breakout', 'Brick Burst', 'Clear the wall with a ricochet.', '🧱'],
+  ['flappy-clone', 'Flappy Bird', 'Thread the gates.', '🐦'],
+  ['custom-tetris', 'Tetris', 'Stack, clear, survive.', '🟪'],
+  ['pong', 'Pong', 'A two-paddle classic.', '🏓'],
+  ['tic-tac-toe', 'Tic-Tac-Toe', 'Take on the arcade brain.', '⭕'],
+  ['memory-match', 'Memory Match', 'Turn over every pair.', '🃏'],
+  ['fighter-lite', 'Duel Lite', 'Couch-versus brawl.', '🥊'],
+  ['slot-machine', 'Lucky Lights', 'A tiny purely-for-fun spinner.', '🎰'],
+  ['dark-room', 'Night Watch', 'Keep the lantern alive.', '🕯️'],
+  ['runner', 'JagDev Runner', 'Dodge, jump, and dash through the course.', '🏃'],
+].map(([slug, title, tagline, icon]) => ({ slug, title, tagline, icon, real: false }));
 
   const games = [...classicsGames, ...codexGames];
 
