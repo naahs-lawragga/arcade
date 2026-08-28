@@ -12,6 +12,7 @@ A **static, no-dependency browser game hub**. Every playable entry is **native D
 ## Game Categories
 
 ### Open-Source
+
 | Game | Description | Status |
 | --- | --- | --- |
 | **2048** | The real thing — official source by Gabriele Cirulli. | Real Game |
@@ -19,12 +20,14 @@ A **static, no-dependency browser game hub**. Every playable entry is **native D
 | **Space Invaders** | The real thing — classic retro alien defense. | Real Game |
 
 ### Game Launchers
+
 | Launcher | Description | Status |
 | --- | --- | --- |
 | **Playtropolis** | Pure fun, zero ads—instant play on any device. | Game Launcher |
 | **The Pizza Edition** | Browser games with zero downloads or accounts. | Game Launcher |
 
 ### Coded Originals
+
 | Game | Description | Status |
 | --- | --- | --- |
 | **Snake** | Eat sparks. Don't bite your trail. | Coded Original |
@@ -41,10 +44,10 @@ A **static, no-dependency browser game hub**. Every playable entry is **native D
 
 ## Architecture
 
-- **`js/main.js`** owns the game catalog, client-side view switching, and route hash.
-- **`js/gameLoader.js`** loads a game script on demand and calls its `init(container)` function; changing games calls `destroy()` and removes its stylesheet.
-- **`js/shared/input.js`** centralizes keyboard state plus swipe detection.
-- **`js/shared/storage.js`** persists each game’s best score with namespaced `localStorage` keys.
+* **`js/main.js`** owns the game catalog, client-side view switching, and route hash.
+* **`js/gameLoader.js`** loads a game script on demand and calls its `init(container)` function; changing games calls `destroy()` and removes its stylesheet.
+* **`js/shared/input.js`** centralizes keyboard state plus swipe detection.
+* **`js/shared/storage.js`** persists each game’s best score with namespaced `localStorage` keys.
 
 ## License
 
