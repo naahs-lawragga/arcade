@@ -4,7 +4,7 @@
     init: function (container) {
       container.innerHTML = `
         <iframe 
-          src="https://hextris.io/" 
+          src="./games/hextris/build/index.html" 
           style="width: 100%; height: 620px; border: 2px solid rgba(139, 92, 246, 0.3); border-radius: 12px; background: #0b0d19; display: block; margin: 0 auto;"
         ></iframe>
       `;
