@@ -8,13 +8,13 @@
 
       container.innerHTML = `
         <div style="display:flex; flex-direction:column; align-items:center; gap:20px; font-family:sans-serif; color:#fff; padding-top:40px;">
-          <div style="display:flex; gap:15px; background:#1e293b; padding:20px; border-radius:12px; border:2px solid #334155;">
-            <div id="r1" style="font-size:64px; background:#0f172a; padding:10px 20px; border-radius:8px;">💎</div>
-            <div id="r2" style="font-size:64px; background:#0f172a; padding:10px 20px; border-radius:8px;">💎</div>
-            <div id="r3" style="font-size:64px; background:#0f172a; padding:10px 20px; border-radius:8px;">💎</div>
+          <div style="display:flex; gap:15px; background:#16192e; padding:24px; border-radius:16px; border:2px solid rgba(139, 92, 246, 0.3); box-shadow:0 0 25px rgba(139, 92, 246, 0.2);">
+            <div id="r1" style="font-size:64px; background:#0b0d19; padding:15px 25px; border-radius:12px; border:1px solid rgba(255,255,255,0.05);">💎</div>
+            <div id="r2" style="font-size:64px; background:#0b0d19; padding:15px 25px; border-radius:12px; border:1px solid rgba(255,255,255,0.05);">💎</div>
+            <div id="r3" style="font-size:64px; background:#0b0d19; padding:15px 25px; border-radius:12px; border:1px solid rgba(255,255,255,0.05);">💎</div>
           </div>
-          <button id="spinBtn" style="padding:12px 32px; font-size:18px; font-weight:bold; background:#3b82f6; color:#fff; border:none; border-radius:8px; cursor:pointer;">SPIN</button>
-          <div id="status" style="font-size:20px; height:24px;"></div>
+          <button id="spinBtn" style="padding:14px 40px; font-size:18px; font-weight:bold; background:linear-gradient(135deg, #8b5cf6, #06b6d4); color:#fff; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 15px rgba(139, 92, 246, 0.4); transition:transform 0.1s;">SPIN</button>
+          <div id="status" style="font-size:20px; height:24px; color:#94a3b8; font-weight:600;"></div>
         </div>
       `;
 
@@ -26,6 +26,7 @@
 
       btn.addEventListener('click', () => {
         btn.disabled = true;
+        btn.style.opacity = '0.6';
         status.textContent = 'Spinning...';
         let ticks = 0;
 
@@ -38,11 +39,15 @@
           if (ticks > 15) {
             clearInterval(intervalId);
             btn.disabled = false;
+            btn.style.opacity = '1';
             if (r1.textContent === r2.textContent && r2.textContent === r3.textContent) {
+              status.style.color = '#38bdf8';
               status.textContent = '🎉 JACKPOT!';
             } else if (r1.textContent === r2.textContent || r2.textContent === r3.textContent || r1.textContent === r3.textContent) {
+              status.style.color = '#c084fc';
               status.textContent = '✨ Match 2!';
             } else {
+              status.style.color = '#94a3b8';
               status.textContent = 'Try again!';
             }
           }
