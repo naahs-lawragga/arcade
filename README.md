@@ -1,6 +1,6 @@
 # Arcade
 
-A **static, no-dependency browser game hub**. Every playable entry is **native DOM or Canvas code** dynamically imported into one in-page shell. There are **no iframes**, embedded third-party games, network calls, copied sprites, sound effects, or external game bundles.
+A **static, no-dependency browser game hub**. Every playable entry is **native DOM or Canvas code** dynamically imported into one in-page shell. It includes curated open-source classics, external web game launchers, and custom-built arcade games.
 
 ## Run locally & deployment
 
@@ -9,49 +9,35 @@ A **static, no-dependency browser game hub**. Every playable entry is **native D
 3. **Deploy online:** Upload this extracted folder to **Vercel**, **Netlify**, or any free hosting website to get a live domain. Vercel hosting is recommended because Vercel domains are typically unblocked on school networks, allowing you to access your arcade anywhere.
 4. **Google Sites / Presentation embedding:** Because security policies block direct iframe embedding of external websites or folders, you can add your hosted Vercel link onto a Google Sites page or slide deck using a clean launcher button or external link.
 
-## Playable games
+## Game Categories
 
+### Open-Source
 | Game | Description | Status |
 | --- | --- | --- |
-| **Snake** | Grid-based spark-eating arcade game | Built for Arcade |
-| **2048** | Slide equal numbered tiles together | Built for Arcade; the name/concept is separately represented by the MIT original below, but no upstream code was copied |
-| **Brick Burst** | Canvas paddle-and-brick game | Built for Arcade |
-| **Sky Hopper** | Tap-to-flap obstacle game | Built for Arcade |
-| **Block Fall** | Falling-block line clearer | Built for Arcade |
-| **Pong** | Two-player local paddle match | Built for Arcade |
-| **Three in a Row** | DOM board game against a light CPU | Built for Arcade |
-| **Memory Match** | Turn over matching emoji pairs | Built for Arcade |
-| **Duel Lite** | Two-player local canvas brawler | Built for Arcade |
-| **Lucky Lights** | Non-monetary three-reel spinner | Built for Arcade |
-| **Night Watch** | Tiny text-and-button survival loop | Built for Arcade |
-| **Metro Dash** | One-button obstacle runner | Built for Arcade |
+| **2048** | The real thing — official source by Gabriele Cirulli. | Real Game |
+| **Hextris** | The real thing — official fast-paced hexagonal puzzle game. | Real Game |
+| **Space Invaders** | The real thing — classic retro alien defense. | Real Game |
 
-## Upstream license survey
+### Game Launchers
+| Launcher | Description | Status |
+| --- | --- | --- |
+| **Playtropolis** | Pure fun, zero ads—instant play on any device. | Game Launcher |
+| **The Pizza Edition** | Browser games with zero downloads or accounts. | Game Launcher |
 
-The requested title search was performed before deciding what to include. **No repository code or assets were adapted into this project**; the table is retained for traceability and to make later, deliberate adaptation safer. “Not included” means it was not copied, not that the game is unavailable elsewhere.
-
-| Requested project | Candidate source reviewed | License result | Decision |
-| --- | --- | --- | --- |
-| **2048** | [gabrielecirulli/2048](https://github.com/gabrielecirulli/2048) | MIT | Not copied; independently built implementation |
-| **JavaScript Snake** | [gamedolphin/javascript_snake](https://github.com/gamedolphin/JavaScript_snake) | MIT | Not copied; independently built implementation |
-| **Coffee Snake** | Search did not produce an unambiguous repository with a clear permitted license | Unverified | Skipped |
-| **Clumsy Bird** | [ellisonleao/clumsy-bird](https://github.com/ellisonleao/clumsy-bird) | MIT | Not copied; independently built Sky Hopper |
-| **HTML5 multiplayer Breakout** | Search did not identify an unambiguous, clearly permissive candidate | Unverified | Skipped; Brick Burst is built |
-| **Custom Tetris** | ondras/custom-tetris candidate | No clear permitted license located during review | Skipped; Block Fall is built |
-| **HexGL** | [BKcore/HexGL](https://github.com/BKcore/HexGL) | MIT for code/resources unless otherwise specified | Not copied; requires separate 3D integration/assets review |
-| **JavaScript Racer** | [jakesgordon/javascript-racer](https://github.com/jakesgordon/javascript-racer) | License not confirmed in this review | Skipped |
-| **mk.js** | [mgechev/mk.js](https://github.com/mgechev/mk.js) | MIT | Not copied; Duel Lite is built |
-| **DuckHunt-JS** | [MattSurabian/DuckHunt-JS](https://github.com/MattSurabian/DuckHunt-JS) | MIT | Not copied; its recognizable original-game assets are intentionally not used |
-| **HTML5 Slot Machine** | [johakr/html5-slot-machine](https://github.com/johakr/html5-slot-machine) | MIT | Not copied; Lucky Lights is built |
-| **A Dark Room** | [doublespeakgames/adarkroom](https://github.com/doublespeakgames/adarkroom) | MPL-2.0 (not in allowed set) | Skipped; Night Watch is built, unrelated writing/design |
-| **Captain Rogers** | Search did not identify a source project with a clear permitted license | Unverified | Skipped |
-| **Chromacore** | [Murkantilism/Chromacore](https://github.com/Murkantilism/Chromacore) | MIT | Not copied; requires Unity/platform build migration review |
-| **Jolly Jumper** | Search did not identify an unambiguous source project with a clear permitted license | Unverified | Skipped |
-| **Color Quest** | Search did not identify an unambiguous source project with a clear permitted license | Unverified | Skipped |
-| **Coil** | [leereilly/Coil](https://github.com/leereilly/Coil) | MIT | Not copied; needs a separate adaptation pass |
-| **CanyonRunner** | Search did not identify an unambiguous source project with a clear permitted license | Unverified | Skipped |
-| **d3shooter** | Search did not identify an unambiguous source project with a clear permitted license | Unverified | Skipped |
-| **Circus Charlie** | eugenioclrc/circushtml5 candidate | License not confirmed in this review | Skipped |
+### Coded Originals
+| Game | Description | Status |
+| --- | --- | --- |
+| **Snake** | Eat sparks. Don't bite your trail. | Coded Original |
+| **Brick Burst** | Clear the wall with a ricochet. | Coded Original |
+| **Flappy Bird** | Thread the gates. | Coded Original |
+| **Tetris** | Stack, clear, survive. | Coded Original |
+| **Pong** | A two-paddle classic. | Coded Original |
+| **Tic-Tac-Toe** | Take on the arcade brain. | Coded Original |
+| **Memory Match** | Turn over every pair. | Coded Original |
+| **Duel Lite** | Couch-versus brawl. | Coded Original |
+| **Lucky Lights** | A tiny purely-for-fun spinner. | Coded Original |
+| **Night Watch** | Keep the lantern alive. | Coded Original |
+| **JagDev Runner** | Dodge, jump, and dash through the course. | Coded Original |
 
 ## Architecture
 
@@ -59,16 +45,9 @@ The requested title search was performed before deciding what to include. **No r
 - **`js/gameLoader.js`** loads a game script on demand and calls its `init(container)` function; changing games calls `destroy()` and removes its stylesheet.
 - **`js/shared/input.js`** centralizes keyboard state plus swipe detection.
 - **`js/shared/storage.js`** persists each game’s best score with namespaced `localStorage` keys.
-- Each **`games/<slug>/index.js`** exports `init(container)` and returns `{ destroy() }`.
 
-## Curated Classics
+## License
 
-| Game | Source | License | Notes |
-| --- | --- | --- | --- |
-| **2048** | [gabrielecirulli/2048](https://github.com/gabrielecirulli/2048) | MIT | Real upstream source, adapted to mount into this shell's `init(host)`/`destroy()` interface. Styling scoped to a `.real2048-root` wrapper instead of `html, body` so it doesn't leak into the rest of the site. |
+Copyright © 2026 Shaan Aggarwal.
 
-More verified-license games will be added to this section over time.
-
-## Project license
-
-The original Arcade hub code in this folder is released under the **MIT License**. The "Codex Originals" games are original work for this project, not ports of the surveyed repositories. The "Curated Classics" games are real third-party open-source code, used and adapted under their original licenses (credited above and in-game).
+This project is released under the **MIT License**. You are free to use, play, and host this project free of charge. However, you may not pass this project off as your own original creation. Anyone hosting or distributing this code must include the original copyright notice and credit to Shaan Aggarwal, as detailed in the `LICENSE` file.
