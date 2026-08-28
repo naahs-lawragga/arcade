@@ -1,4 +1,103 @@
-(function(){
-const{createInput}=window.ArcadeInput;const{highScore,saveHighScore}=window.ArcadeStorage;
-window.ArcadeGames=window.ArcadeGames||{};window.ArcadeGames['flappy-clone']={init(host){host.innerHTML='<div class="game-root"><div class="game-hud"><span>Score <strong id="s">0</strong></span><span>Best <strong id="b"></strong></span></div><canvas width="420" height="560"></canvas><p class="hint">Space / tap to flap</p></div>';const c=host.querySelector('canvas'),g=c.getContext('2d'),input=createInput(),s=host.querySelector('#s'),b=host.querySelector('#b');let y=260,v=0,pipes=[],n=0,score=0,over=false,last=false,raf;b.textContent=highScore('flappy-clone');const flap=()=>{if(!over)v=-6.8};c.addEventListener('pointerdown',flap);function f(){const press=input.down(' ')||input.down('ArrowUp');if(press&&!last)flap();last=press;v+=.35;y+=v;n++;if(n%95===0){const gap=110+Math.random()*120;pipes.push({x:420,g:gap})}pipes.forEach(p=>{p.x-=2.8;if(p.x===145){score++;s.textContent=score;b.textContent=saveHighScore('flappy-clone',score)}if(70>p.x&&70<p.x+50&&(y<p.g-65||y>p.g+65))over=true});if(y<0||y>560)over=true;g.fillStyle='#1a2851';g.fillRect(0,0,420,560);g.fillStyle='#64d6a6';pipes.forEach(p=>{g.fillRect(p.x,0,50,p.g-65);g.fillRect(p.x,p.g+65,50,560)});g.fillStyle='#ffe66d';g.beginPath();g.arc(70,y,16,0,7);g.fill();if(over){g.fillStyle='white';g.font='bold 26px system-ui';g.fillText('Tap restart',135,280)}else raf=requestAnimationFrame(f)}f();return{destroy(){cancelAnimationFrame(raf);input.dispose();c.removeEventListener('pointerdown',flap)}}}}
+window.GameModule = (function () {
+  let container, canvas, ctx, animId;
+  let birdY, velocity, pipes, score, gameOver;
+  const gravity = 0.4, jump = -7, pipeGap = 120, pipeWidth = 50;
+
+  function handleInput(e) {
+    if (e.code === 'Space' || e.type === 'click') {
+      if (gameOver) reset();
+      else velocity = jump;
+    }
+  }
+
+  function reset() {
+    birdY = 200;
+    velocity = 0;
+    pipes = [];
+    score = 0;
+    gameOver = false;
+  }
+
+  function loop() {
+    ctx.fillStyle = '#70c5ce';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    if (!gameOver) {
+      velocity += gravity;
+      birdY += velocity;
+
+      if (pipes.length === 0 || pipes[pipes.length - 1].x < canvas.width - 180) {
+        const topH = Math.floor(Math.random() * (canvas.height - pipeGap - 100)) + 40;
+        pipes.push({ x: canvas.width, top: topH, passed: false });
+      }
+
+      pipes.forEach(pipe => {
+        pipe.x -= 2;
+        if (!pipe.passed && pipe.x < 100) {
+          score++;
+          pipe.passed = true;
+        }
+        if (pipe.x + pipeWidth < 0) pipes.shift();
+
+        // Collision detection
+        if (100 + 20 > pipe.x && 100 - 20 < pipe.x + pipeWidth) {
+          if (birdY - 12 < pipe.top || birdY + 12 > pipe.top + pipeGap) {
+            gameOver = true;
+          }
+        }
+      });
+
+      if (birdY < 0 || birdY > canvas.height) gameOver = true;
+    }
+
+    // Render Pipes
+    ctx.fillStyle = '#22c55e';
+    pipes.forEach(pipe => {
+      ctx.fillRect(pipe.x, 0, pipeWidth, pipe.top);
+      ctx.fillRect(pipe.x, pipe.top + pipeGap, pipeWidth, canvas.height - pipe.top - pipeGap);
+    });
+
+    // Render Bird
+    ctx.fillStyle = '#eab308';
+    ctx.beginPath();
+    ctx.arc(100, birdY, 14, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Render Score & Overlay
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 28px sans-serif';
+    ctx.fillText(`Score: ${score}`, 20, 40);
+
+    if (gameOver) {
+      ctx.fillStyle = 'rgba(0,0,0,0.5)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'center';
+      ctx.fillText('Game Over! Press Space or Click', canvas.width / 2, canvas.height / 2);
+      ctx.textAlign = 'left';
+    }
+
+    animId = requestAnimationFrame(loop);
+  }
+
+  return {
+    init(host) {
+      container = host;
+      canvas = document.createElement('canvas');
+      canvas.width = 400;
+      canvas.height = 500;
+      container.appendChild(canvas);
+      ctx = canvas.getContext('2d');
+      reset();
+      window.addEventListener('keydown', handleInput);
+      canvas.addEventListener('click', handleInput);
+      loop();
+    },
+    destroy() {
+      cancelAnimationFrame(animId);
+      window.removeEventListener('keydown', handleInput);
+      if (canvas) canvas.removeEventListener('click', handleInput);
+      if (container) container.innerHTML = '';
+    }
+  };
 })();
