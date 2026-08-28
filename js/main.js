@@ -12,17 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
     <path d="M 32 25 L 68 33 L 73 54 L 54 59 L 52 46 L 43 44 L 38 75 L 26 72 Z M 44 34 L 46 40 L 53 42 L 54 36 Z" fill="#ffffff"/>
   </svg>`;
 
-  const greenEyeIcon = `<svg viewBox="0 0 100 100" width="1em" height="1em" style="display: inline-block; vertical-align: middle;">
-    <path d="M 10 50 C 25 20, 75 20, 90 50 C 75 80, 25 80, 10 50 Z" fill="#10b981"/>
-    <circle cx="50" cy="50" r="20" fill="#065f46"/>
-    <circle cx="50" cy="50" r="10" fill="#ffffff"/>
-    <circle cx="54" cy="46" r="4" fill="#10b981"/>
-  </svg>`;
-
   const launcherGames = [
     ['playtropolis', 'Playtropolis', 'Pure fun, zero ads—instant play on any device.', playtropolisIcon],
     ['pizza-edition', 'The Pizza Edition', 'Browser games with zero downloads or accounts.', '🍕'],
-    ['ozogames', 'OzoGames', 'Play hundreds of free unblocked games online. No downloads.', greenEyeIcon],
   ].map(([slug, title, tagline, icon]) => ({ slug, title, tagline, icon, real: true, badgeText: 'GAME LAUNCHER' }));
 
   const codexGames = [
