@@ -242,16 +242,36 @@
     © 2026 Naahs Lawragga. Free to play and host under the MIT License. Do not claim as your own.
   </footer>
 
-  <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      const activeAnnouncement = localStorage.getItem('arcade_announcement');
+  <!-- Firebase SDKs -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDf5Z8jyxVDgPuLxo4ImYBcUwaM6DlDYXM",
+      authDomain: "web-arcade-9d87c.firebaseapp.com",
+      projectId: "web-arcade-9d87c",
+      storageBucket: "web-arcade-9d87c.firebasestorage.app",
+      messagingSenderId: "295769001488",
+      appId: "1:295769001488:web:b0971a736f5c0054618495"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.addEventListener('DOMContentLoaded', async () => {
       const signoutBtn = document.getElementById('signout-btn');
       
-      if (activeAnnouncement) {
-        const banner = document.getElementById('announcement-banner');
-        banner.textContent = activeAnnouncement;
-        banner.style.display = 'block';
-        signoutBtn.style.top = '55px';
+      try {
+        const annDoc = await getDoc(doc(db, "arcade_config", "announcement"));
+        if (annDoc.exists() && annDoc.data().text) {
+          const banner = document.getElementById('announcement-banner');
+          banner.textContent = annDoc.data().text;
+          banner.style.display = 'block';
+          signoutBtn.style.top = '55px';
+        }
+      } catch (err) {
+        console.error("Error fetching announcement:", err);
       }
 
       const currentUser = sessionStorage.getItem('arcade_current_user');
@@ -259,14 +279,20 @@
         document.getElementById('login-overlay').style.display = 'none';
         signoutBtn.style.display = 'flex';
         
-        const admins = JSON.parse(localStorage.getItem('arcade_admins') || '[]');
-        if (currentUser === 'naahs' || admins.includes(currentUser)) {
+        if (currentUser === 'naahs') {
           document.getElementById('admin-nav-link').style.display = 'inline-block';
+        } else {
+          try {
+            const userDoc = await getDoc(doc(db, "arcade_users", currentUser));
+            if (userDoc.exists() && userDoc.data().isAdmin) {
+              document.getElementById('admin-nav-link').style.display = 'inline-block';
+            }
+          } catch(e) {}
         }
       }
     });
 
-    function switchTab(tab) {
+    window.switchTab = function(tab) {
       if (tab === 'signin') {
         document.getElementById('tab-signin').classList.add('active');
         document.getElementById('tab-signup').classList.remove('active');
@@ -280,14 +306,13 @@
       }
     }
 
-    function handleSignIn() {
+    window.handleSignIn = async function() {
       const user = document.getElementById('signin-user').value.trim().toLowerCase();
       const pass = document.getElementById('signin-pass').value;
       const errorDiv = document.getElementById('signin-error');
 
-      const bannedList = JSON.parse(localStorage.getItem('arcade_banned_users') || '[]');
-      if (bannedList.includes(user)) {
-        errorDiv.textContent = 'This account has been banned.';
+      if (!user || !pass) {
+        errorDiv.textContent = 'Please fill out all fields.';
         errorDiv.style.display = 'block';
         return;
       }
@@ -298,24 +323,38 @@
         return;
       }
 
-      const customPasswords = JSON.parse(localStorage.getItem('arcade_passwords') || '{}');
-      if (customPasswords[user]) {
-        if (pass === customPasswords[user]) {
-          sessionStorage.setItem('arcade_current_user', user);
-          location.reload();
-          return;
-        } else {
-          errorDiv.textContent = 'Incorrect password.';
+      try {
+        const docRef = doc(db, "arcade_users", user);
+        const snapshot = await getDoc(docRef);
+
+        if (!snapshot.exists()) {
+          errorDiv.textContent = 'Invalid username or password.';
           errorDiv.style.display = 'block';
           return;
         }
-      }
 
-      errorDiv.textContent = 'Invalid username or password.';
-      errorDiv.style.display = 'block';
+        const data = snapshot.data();
+        if (data.isBanned) {
+          errorDiv.textContent = 'This account has been banned.';
+          errorDiv.style.display = 'block';
+          return;
+        }
+
+        if (data.password === pass) {
+          sessionStorage.setItem('arcade_current_user', user);
+          location.reload();
+        } else {
+          errorDiv.textContent = 'Incorrect password.';
+          errorDiv.style.display = 'block';
+        }
+      } catch (err) {
+        console.error(err);
+        errorDiv.textContent = 'Connection error during sign in.';
+        errorDiv.style.display = 'block';
+      }
     }
 
-    function handleSignUp() {
+    window.handleSignUp = async function() {
       const user = document.getElementById('signup-user').value.trim().toLowerCase();
       const pass = document.getElementById('signup-pass').value;
       const errorDiv = document.getElementById('signup-error');
@@ -328,34 +367,53 @@
         return;
       }
 
-      const customPasswords = JSON.parse(localStorage.getItem('arcade_passwords') || '{}');
-      if (customPasswords[user] || user === 'naahs') {
+      if (user === 'naahs') {
         errorDiv.textContent = 'Username is already taken.';
         errorDiv.style.display = 'block';
         successDiv.style.display = 'none';
         return;
       }
 
-      customPasswords[user] = pass;
-      localStorage.setItem('arcade_passwords', JSON.stringify(customPasswords));
+      try {
+        const docRef = doc(db, "arcade_users", user);
+        const snapshot = await getDoc(docRef);
 
-      successDiv.textContent = 'Account created successfully! You can now sign in.';
-      successDiv.style.display = 'block';
-      errorDiv.style.display = 'none';
+        if (snapshot.exists()) {
+          errorDiv.textContent = 'Username is already taken.';
+          errorDiv.style.display = 'block';
+          successDiv.style.display = 'none';
+          return;
+        }
 
-      document.getElementById('signup-user').value = '';
-      document.getElementById('signup-pass').value = '';
+        await setDoc(docRef, {
+          password: pass,
+          isBanned: false,
+          isAdmin: false
+        });
+
+        successDiv.textContent = 'Account created successfully! You can now sign in.';
+        successDiv.style.display = 'block';
+        errorDiv.style.display = 'none';
+
+        document.getElementById('signup-user').value = '';
+        document.getElementById('signup-pass').value = '';
+      } catch (err) {
+        console.error(err);
+        errorDiv.textContent = 'Error creating account.';
+        errorDiv.style.display = 'block';
+        successDiv.style.display = 'none';
+      }
     }
 
-    function promptSignOut() {
+    window.promptSignOut = function() {
       document.getElementById('signout-modal').style.display = 'flex';
     }
 
-    function closeSignOutPrompt() {
+    window.closeSignOutPrompt = function() {
       document.getElementById('signout-modal').style.display = 'none';
     }
 
-    function confirmSignOut() {
+    window.confirmSignOut = function() {
       sessionStorage.removeItem('arcade_current_user');
       location.reload();
     }

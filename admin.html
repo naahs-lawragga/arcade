@@ -92,12 +92,12 @@
 
   <div class="admin-container">
     <h1>⚙️ Admin Control Panel</h1>
-    <p style="color: #888; margin-bottom: 30px;">Manage site announcements, registered users, and administrative access.</p>
+    <p style="color: #888; margin-bottom: 30px;">Manage cloud announcements and synchronized global user accounts.</p>
 
     <!-- Announcement Manager -->
     <div class="section-group">
       <label for="announcement-input">Site Announcement Banner</label>
-      <textarea id="announcement-input" rows="3" placeholder="Type an announcement to display across the top of the arcade..."></textarea>
+      <textarea id="announcement-input" rows="3" placeholder="Type an announcement to display globally..."></textarea>
       <button class="btn" onclick="saveAnnouncement()">Publish Announcement</button>
       <button class="btn btn-danger" onclick="clearAnnouncement()" style="background: #374151; margin-left: 5px;">Remove Banner</button>
     </div>
@@ -106,88 +106,123 @@
 
     <!-- User Management -->
     <div class="section-group">
-      <label>Registered Users & Bans</label>
+      <label>Registered Cloud Users & Bans</label>
       <div id="users-container" style="max-height: 200px; overflow-y: auto; margin-top: 10px;">
-        <!-- Populated dynamically via script -->
+        <p style="color: #666; font-size: 0.9rem;">Loading users...</p>
       </div>
     </div>
 
     <a href="index.html" class="back-link">← Return to Arcade</a>
   </div>
 
-  <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      // Security check: only allow 'naahs' or designated admins
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDf5Z8jyxVDgPuLxo4ImYBcUwaM6DlDYXM",
+      authDomain: "web-arcade-9d87c.firebaseapp.com",
+      projectId: "web-arcade-9d87c",
+      storageBucket: "web-arcade-9d87c.firebasestorage.app",
+      messagingSenderId: "295769001488",
+      appId: "1:295769001488:web:b0971a736f5c0054618495"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.addEventListener('DOMContentLoaded', async () => {
       const currentUser = sessionStorage.getItem('arcade_current_user');
-      const admins = JSON.parse(localStorage.getItem('arcade_admins') || '[]');
       
-      if (currentUser !== 'naahs' && !admins.includes(currentUser)) {
-        alert('Access denied. Administrator privileges required.');
-        window.location.href = 'index.html';
-        return;
+      if (currentUser !== 'naahs') {
+        try {
+          const userDoc = await getDoc(doc(db, "arcade_users", currentUser));
+          if (!userDoc.exists() || !userDoc.data().isAdmin) {
+            alert('Access denied. Administrator privileges required.');
+            window.location.href = 'index.html';
+            return;
+          }
+        } catch (e) {
+          alert('Access denied.');
+          window.location.href = 'index.html';
+          return;
+        }
       }
 
-      // Load existing announcement
-      const currentAnnouncement = localStorage.getItem('arcade_announcement');
-      if (currentAnnouncement) {
-        document.getElementById('announcement-input').value = currentAnnouncement;
+      try {
+        const annDoc = await getDoc(doc(db, "arcade_config", "announcement"));
+        if (annDoc.exists()) {
+          document.getElementById('announcement-input').value = annDoc.data().text || '';
+        }
+      } catch (err) {
+        console.error(err);
       }
 
       loadUsers();
     });
 
-    function saveAnnouncement() {
+    window.saveAnnouncement = async function() {
       const text = document.getElementById('announcement-input').value.trim();
-      if (text) {
-        localStorage.setItem('arcade_announcement', text);
-        alert('Announcement published successfully!');
-      } else {
-        clearAnnouncement();
+      try {
+        await setDoc(doc(db, "arcade_config", "announcement"), { text: text });
+        alert('Announcement published globally!');
+      } catch (err) {
+        console.error(err);
+        alert('Failed to publish announcement.');
       }
     }
 
-    function clearAnnouncement() {
-      localStorage.removeItem('arcade_announcement');
-      document.getElementById('announcement-input').value = '';
-      alert('Announcement removed.');
+    window.clearAnnouncement = async function() {
+      try {
+        await setDoc(doc(db, "arcade_config", "announcement"), { text: "" });
+        document.getElementById('announcement-input').value = '';
+        alert('Announcement removed.');
+      } catch (err) {
+        console.error(err);
+      }
     }
 
-    function loadUsers() {
+    async function loadUsers() {
       const container = document.getElementById('users-container');
       container.innerHTML = '';
 
-      const passwords = JSON.parse(localStorage.getItem('arcade_passwords') || '{}');
-      const bannedUsers = JSON.parse(localStorage.getItem('arcade_banned_users') || '[]');
-      const usernames = Object.keys(passwords);
+      try {
+        const querySnapshot = await getDocs(collection(db, "arcade_users"));
+        if (querySnapshot.empty) {
+          container.innerHTML = '<p style="color: #666; font-size: 0.9rem;">No registered users found.</p>';
+          return;
+        }
 
-      if (usernames.length === 0) {
-        container.innerHTML = '<p style="color: #666; font-size: 0.9rem;">No registered users found.</p>';
-        return;
+        querySnapshot.forEach((userDoc) => {
+          const username = userDoc.id;
+          const data = userDoc.data();
+          const isBanned = data.isBanned || false;
+
+          const item = document.createElement('div');
+          item.className = 'user-list-item';
+          item.innerHTML = `
+            <span>👤 ${username} ${isBanned ? '<span style="color: #ef4444; font-size: 0.8rem;">(Banned)</span>' : ''}</span>
+            <button class="btn ${isBanned ? '' : 'btn-danger'}" style="padding: 6px 12px; font-size: 0.85rem;" onclick="toggleBan('${username}', ${isBanned})">
+              ${isBanned ? 'Unban' : 'Ban'}
+            </button>
+          `;
+          container.appendChild(item);
+        });
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = '<p style="color: #f87171; font-size: 0.9rem;">Error loading users.</p>';
       }
-
-      usernames.forEach(user => {
-        const isBanned = bannedUsers.includes(user);
-        const item = document.createElement('div');
-        item.className = 'user-list-item';
-        item.innerHTML = `
-          <span>👤 ${user} ${isBanned ? '<span style="color: #ef4444; font-size: 0.8rem;">(Banned)</span>' : ''}</span>
-          <button class="btn ${isBanned ? '' : 'btn-danger'}" style="padding: 6px 12px; font-size: 0.85rem;" onclick="toggleBan('${user}')">
-            ${isBanned ? 'Unban' : 'Ban'}
-          </button>
-        `;
-        container.appendChild(item);
-      });
     }
 
-    function toggleBan(username) {
-      let bannedUsers = JSON.parse(localStorage.getItem('arcade_banned_users') || '[]');
-      if (bannedUsers.includes(username)) {
-        bannedUsers = bannedUsers.filter(u => u !== username);
-      } else {
-        bannedUsers.push(username);
+    window.toggleBan = async function(username, currentStatus) {
+      try {
+        const userRef = doc(db, "arcade_users", username);
+        await updateDoc(userRef, { isBanned: !currentStatus });
+        loadUsers();
+      } catch (err) {
+        console.error(err);
+        alert('Failed to update ban status.');
       }
-      localStorage.setItem('arcade_banned_users', JSON.stringify(bannedUsers));
-      loadUsers();
     }
   </script>
 </body>
