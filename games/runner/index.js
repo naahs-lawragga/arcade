@@ -22,7 +22,7 @@
         if (e.code === 'ArrowRight' || e.code === 'KeyD') currentLane = Math.min(2, currentLane + 1);
         if ((e.code === 'Space' || e.code === 'ArrowUp') && !isJumping) {
           isJumping = true;
-          jumpVel = 12;
+          jumpVel = 10;
         }
       }
 
@@ -45,17 +45,18 @@
           score++;
           if (isJumping) {
             jumpY += jumpVel;
-            jumpVel -= 0.8;
+            jumpVel -= 0.6;
             if (jumpY <= 0) { jumpY = 0; isJumping = false; }
           }
 
-          if (Math.random() < 0.03) {
+          // Slower obstacle spawn rate
+          if (Math.random() < 0.018) {
             obstacles.push({ lane: Math.floor(Math.random() * 3), y: -40 });
           }
 
           for (let i = obstacles.length - 1; i >= 0; i--) {
             const obs = obstacles[i];
-            obs.y += 6;
+            obs.y += 3.5; // Slower movement speed
             if (obs.y > canvas.height) obstacles.splice(i, 1);
 
             if (obs.lane === currentLane && obs.y > 420 && obs.y < 480 && jumpY < 25) {
