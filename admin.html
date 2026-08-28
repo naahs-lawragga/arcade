@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Arcade Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    body { background: #0a0a0f; color: #fff; font-family: 'Inter', sans-serif; padding: 40px; }
+    .admin-container { max-width: 600px; margin: 0 auto; background: #161622; border: 1px solid rgba(255,255,255,0.1); padding: 30px; border-radius: 16px; }
+    h1 { font-family: 'Space Grotesk', sans-serif; color: #a855f7; margin-bottom: 20px; }
+    .admin-section { margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .admin-section h3 { margin-bottom: 12px; color: #fff; }
+    input, textarea { width: 100%; padding: 10px 14px; margin-bottom: 10px; background: #0d0d12; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; color: #fff; font-size: 0.95rem; box-sizing: border-box; }
+    button { padding: 10px 16px; background: #6366f1; border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer; }
+    button:hover { opacity: 0.9; }
+    .back-link { display: inline-block; margin-bottom: 20px; color: #888; text-decoration: none; }
+    .back-link:hover { color: #fff; }
+  </style>
+</head>
+<body>
+
+  <div class="admin-container">
+    <a href="index.html" class="back-link">← Back to Arcade</a>
+    <h1>⚙️ Admin Control Panel</h1>
+
+    <!-- Announcement Control -->
+    <div class="admin-section">
+      <h3>Manage Global Announcement</h3>
+      <textarea id="announcement-text" placeholder="Type banner announcement text here..."></textarea>
+      <button onclick="saveAnnouncement()">Publish Announcement</button>
+      <button onclick="clearAnnouncement()" style="background: #ef4444; margin-left: 8px;">Clear Banner</button>
+    </div>
+
+    <!-- Create / Update User & Password -->
+    <div class="admin-section">
+      <h3>Create User Account / Change Password</h3>
+      <input type="text" id="target-user" placeholder="Username">
+      <input type="password" id="new-password" placeholder="Password">
+      <button onclick="setUserPassword()">Save Account</button>
+    </div>
+
+    <!-- Grant / Revoke Admin Access -->
+    <div class="admin-section" id="main-admin-controls" style="display: none;">
+      <h3>Grant / Revoke Admin Privileges</h3>
+      <input type="text" id="admin-user-input" placeholder="Username">
+      <button onclick="grantAdmin()" style="background: #a855f7;">Make Admin</button>
+      <button onclick="revokeAdmin()" style="background: #64748b; margin-left: 8px;">Remove Admin</button>
+    </div>
+
+    <!-- Ban Management -->
+    <div class="admin-section">
+      <h3>Ban / Unban User</h3>
+      <input type="text" id="ban-user" placeholder="Username">
+      <button onclick="toggleBan()" style="background: #ef4444;">Ban User</button>
+      <button onclick="toggleUnban()" style="background: #22c55e; margin-left: 8px;">Unban User</button>
+    </div>
+  </div>
+
+  <script>
+    const currentUser = sessionStorage.getItem('arcade_current_user');
+    const admins = JSON.parse(localStorage.getItem('arcade_admins') || '[]');
+
+    // Security check: Only main admin ('naahs') or approved sub-admins can access this page
+    if (currentUser !== 'naahs' && !admins.includes(currentUser)) {
+      alert('Access Denied. Admins only.');
+      window.location.href = 'index.html';
+    }
+
+    // Show main-admin-only controls if user is 'naahs'
+    if (currentUser === 'naahs') {
+      document.getElementById('main-admin-controls').style.display = 'block';
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const currentAnnounce = localStorage.getItem('arcade_announcement');
+      if (currentAnnounce) {
+        document.getElementById('announcement-text').value = currentAnnounce;
+      }
+    });
+
+    function saveAnnouncement() {
+      const text = document.getElementById('announcement-text').value.trim();
+      localStorage.setItem('arcade_announcement', text);
+      alert('Announcement published live!');
+    }
+
+    function clearAnnouncement() {
+      localStorage.removeItem('arcade_announcement');
+      document.getElementById('announcement-text').value = '';
+      alert('Announcement cleared.');
+    }
+
+    function setUserPassword() {
+      const user = document.getElementById('target-user').value.trim().toLowerCase();
+      const pass = document.getElementById('new-password').value;
+      if (!user || !pass) return alert('Fill out both fields.');
+
+      const passwords = JSON.parse(localStorage.getItem('arcade_passwords') || '{}');
+      passwords[user] = pass;
+      localStorage.setItem('arcade_passwords', JSON.stringify(passwords));
+      alert(`Account created/updated for user: ${user}`);
+      document.getElementById('target-user').value = '';
+      document.getElementById('new-password').value = '';
+    }
+
+    function grantAdmin() {
+      if (currentUser !== 'naahs') return alert('Only the main owner can grant admin access.');
+      const user = document.getElementById('admin-user-input').value.trim().toLowerCase();
+      if (!user) return alert('Enter a username.');
+
+      let currentAdmins = JSON.parse(localStorage.getItem('arcade_admins') || '[]');
+      if (!currentAdmins.includes(user)) {
+        currentAdmins.push(user);
+        localStorage.setItem('arcade_admins', JSON.stringify(currentAdmins));
+        alert(`User ${user} is now an admin!`);
+      } else {
+        alert('User is already an admin.');
+      }
+      document.getElementById('admin-user-input').value = '';
+    }
+
+    function revokeAdmin() {
+      if (currentUser !== 'naahs') return alert('Only the main owner can revoke admin access.');
+      const user = document.getElementById('admin-user-input').value.trim().toLowerCase();
+      if (!user) return alert('Enter a username.');
+
+      let currentAdmins = JSON.parse(localStorage.getItem('arcade_admins') || '[]');
+      currentAdmins = currentAdmins.filter(u => u !== user);
+      localStorage.setItem('arcade_admins', JSON.stringify(currentAdmins));
+      alert(`Admin access removed for ${user}.`);
+      document.getElementById('admin-user-input').value = '';
+    }
+
+    function toggleBan() {
+      const user = document.getElementById('ban-user').value.trim().toLowerCase();
+      if (!user) return alert('Enter a username.');
+
+      const bannedList = JSON.parse(localStorage.getItem('arcade_banned_users') || '[]');
+      if (!bannedList.includes(user)) {
+        bannedList.push(user);
+        localStorage.setItem('arcade_banned_users', JSON.stringify(bannedList));
+        alert(`User ${user} has been banned.`);
+      } else {
+        alert('User is already banned.');
+      }
+      document.getElementById('ban-user').value = '';
+    }
+
+    function toggleUnban() {
+      const user = document.getElementById('ban-user').value.trim().toLowerCase();
+      if (!user) return alert('Enter a username.');
+
+      let bannedList = JSON.parse(localStorage.getItem('arcade_banned_users') || '[]');
+      bannedList = bannedList.filter(u => u !== user);
+      localStorage.setItem('arcade_banned_users', JSON.stringify(bannedList));
+      alert(`User ${user} has been unbanned.`);
+      document.getElementById('ban-user').value = '';
+    }
+  </script>
+</body>
+</html>
