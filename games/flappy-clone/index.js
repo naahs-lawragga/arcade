@@ -14,7 +14,7 @@
 
       let animId;
       let birdY = 200, velocity = 0, pipes = [], score = 0, gameOver = false;
-      const gravity = 0.4, jump = -7, pipeGap = 120, pipeWidth = 50;
+      const gravity = 0.22, jump = -5.5, pipeGap = 130, pipeWidth = 50;
 
       function handleInput(e) {
         if (e.type === 'click' || e.code === 'Space') {
@@ -35,13 +35,13 @@
           velocity += gravity;
           birdY += velocity;
 
-          if (pipes.length === 0 || pipes[pipes.length - 1].x < canvas.width - 180) {
+          if (pipes.length === 0 || pipes[pipes.length - 1].x < canvas.width - 200) {
             const topH = Math.floor(Math.random() * (canvas.height - pipeGap - 100)) + 40;
             pipes.push({ x: canvas.width, top: topH, passed: false });
           }
 
           pipes.forEach(pipe => {
-            pipe.x -= 2;
+            pipe.x -= 1.8;
             if (!pipe.passed && pipe.x < 100) {
               score++;
               pipe.passed = true;
@@ -78,7 +78,8 @@
           ctx.fillRect(0, 0, canvas.width, canvas.height);
           ctx.fillStyle = '#fff';
           ctx.textAlign = 'center';
-          ctx.fillText('Game Over! Click to Restart', canvas.width / 2, canvas.height / 2);
+          ctx.font = '20px sans-serif';
+          ctx.fillText('Game Over! Click or Space to Restart', canvas.width / 2, canvas.height / 2);
           ctx.textAlign = 'left';
         }
 
