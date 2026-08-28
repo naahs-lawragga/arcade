@@ -1,0 +1,3 @@
+[submodule "games/hextris/build"]
+	path = games/hextris/build
+	url = https://github.com/Hextris/hextris.git
