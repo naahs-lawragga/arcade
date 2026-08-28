@@ -3,8 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const classicsGames = [
     ['real-2048', '2048', 'The real thing — official source by Gabriele Cirulli.', '🔢'],
-    ['hextris', 'Hextris', 'Fast-paced hexagonal puzzle challenge.', '🔷'],
-    ['space-invaders', 'Space Invaders', 'Classic arcade alien defense.', '👾'],
+    ['hextris', 'Hextris', 'The real thing — official fast-paced hexagonal puzzle game.', '🔷'],
+    ['space-invaders', 'Space Invaders', 'The real thing — classic retro alien defense.', '👾'],
   ].map(([slug, title, tagline, icon]) => ({ slug, title, tagline, icon, real: true }));
 
   const codexGames = [
