@@ -7,11 +7,10 @@ document.addEventListener('DOMContentLoaded', () => {
     ['space-invaders', 'Space Invaders', 'The real thing — classic retro alien defense.', '👾'],
   ].map(([slug, title, tagline, icon]) => ({ slug, title, tagline, icon, real: true, badgeText: 'REAL GAME' }));
 
-  const playtropolisIcon = `<svg viewBox="0 0 100 100" width="1em" height="1em" style="display: inline-block; vertical-align: middle;">
+const playtropolisIcon = `<svg viewBox="0 0 100 100" style="width: 100%; height: 100%; display: block;">
     <circle cx="50" cy="50" r="48" fill="#6366f1"/>
     <path d="M 32 25 L 68 33 L 73 54 L 54 59 L 52 46 L 43 44 L 38 75 L 26 72 Z M 44 34 L 46 40 L 53 42 L 54 36 Z" fill="#ffffff"/>
   </svg>`;
-
   const launcherGames = [
     ['playtropolis', 'Playtropolis', 'Pure fun, zero ads—instant play on any device.', playtropolisIcon],
     ['pizza-edition', 'The Pizza Edition', 'Browser games with zero downloads or accounts.', '🍕'],
