@@ -1,6 +1,9 @@
 (function () {
-  const SnakeGame = {
+  window.ArcadeGames = window.ArcadeGames || {};
+
+  window.ArcadeGames.snake = {
     init: function (container) {
+      container.innerHTML = '';
       const canvas = document.createElement('canvas');
       canvas.width = 400;
       canvas.height = 400;
@@ -66,20 +69,13 @@
       window.addEventListener('keydown', handleKeydown);
       timer = setInterval(step, 100);
 
-      this._cleanup = function () {
-        clearInterval(timer);
-        window.removeEventListener('keydown', handleKeydown);
-        container.innerHTML = '';
+      return {
+        destroy() {
+          clearInterval(timer);
+          window.removeEventListener('keydown', handleKeydown);
+          container.innerHTML = '';
+        }
       };
-      return this;
-    },
-    destroy: function () {
-      if (this._cleanup) this._cleanup();
     }
   };
-
-  // Attach to all properties gameLoader might check
-  window.snake = SnakeGame;
-  window.SnakeGame = SnakeGame;
-  window.GameModule = SnakeGame;
 })();
