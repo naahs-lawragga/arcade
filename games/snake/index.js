@@ -9,6 +9,9 @@
       canvas.height = 400;
       canvas.style.display = 'block';
       canvas.style.margin = '0 auto';
+      canvas.style.border = '2px solid rgba(139, 92, 246, 0.3)';
+      canvas.style.borderRadius = '12px';
+      canvas.style.boxShadow = '0 0 20px rgba(139, 92, 246, 0.15)';
       container.appendChild(canvas);
       const ctx = canvas.getContext('2d');
 
@@ -49,20 +52,35 @@
           snake.pop();
         }
 
-        ctx.fillStyle = '#0f172a';
+        // Dark Canvas BG
+        ctx.fillStyle = '#0b0d19';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        ctx.fillStyle = '#ef4444';
-        ctx.fillRect(food.x * gridSize + 1, food.y * gridSize + 1, gridSize - 2, gridSize - 2);
+        // Grid lines
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+        for (let i = 0; i < canvas.width; i += gridSize) {
+          ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
+        }
 
+        // Food (Neon Pink/Magenta)
+        ctx.fillStyle = '#ec4899';
+        ctx.shadowColor = '#ec4899';
+        ctx.shadowBlur = 10;
+        ctx.fillRect(food.x * gridSize + 2, food.y * gridSize + 2, gridSize - 4, gridSize - 4);
+
+        // Snake Body (Cyan Glow)
         snake.forEach((part, i) => {
-          ctx.fillStyle = i === 0 ? '#4ade80' : '#22c55e';
+          ctx.fillStyle = i === 0 ? '#38bdf8' : '#0284c7';
+          ctx.shadowColor = '#06b6d4';
+          ctx.shadowBlur = i === 0 ? 12 : 4;
           ctx.fillRect(part.x * gridSize + 1, part.y * gridSize + 1, gridSize - 2, gridSize - 2);
         });
 
-        ctx.fillStyle = '#fff';
-        ctx.font = '16px monospace';
-        ctx.fillText(`Score: ${score}`, 10, 25);
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = 'bold 16px sans-serif';
+        ctx.fillText(`Score: ${score}`, 15, 30);
       }
 
       placeFood();
