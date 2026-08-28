@@ -1,124 +1,209 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Arcade — Admin Panel</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arcade — Admin Control Center</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕹️</text></svg>">
   <style>
+    :root {
+      --bg-main: #0d0d12;
+      --bg-card: #161622;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --accent-purple: #a855f7;
+      --accent-indigo: #6366f1;
+      --accent-red: #ef4444;
+      --accent-green: #22c55e;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+    }
+
+    * { box-sizing: border-box; }
     body {
-      background: #0d0d12;
-      color: #f3f4f6;
+      background: var(--bg-main);
+      color: var(--text-main);
       font-family: 'Inter', sans-serif;
       margin: 0;
-      padding: 40px 20px;
+      padding: 0;
+      min-height: 100vh;
     }
-    .admin-container {
-      max-width: 600px;
-      margin: 0 auto;
-      background: #161622;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 16px;
-      padding: 30px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-    }
-    h1 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.8rem;
-      margin-top: 0;
-      color: #a855f7;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .section-group {
-      margin-bottom: 25px;
-    }
-    label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 8px;
-      font-size: 0.95rem;
-    }
-    input[type="text"], textarea {
-      width: 100%;
-      padding: 12px;
-      background: #0d0d12;
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 8px;
-      color: #fff;
-      font-size: 1rem;
-      box-sizing: border-box;
-      margin-bottom: 10px;
-    }
-    input[type="text"]:focus, textarea:focus {
-      border-color: #a855f7;
-      outline: none;
-    }
-    .btn {
-      padding: 10px 18px;
-      background: #6366f1;
-      border: none;
-      border-radius: 8px;
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
-      transition: opacity 0.2s;
-    }
-    .btn:hover { opacity: 0.9; }
-    .btn-danger { background: #ef4444; }
-    .back-link {
-      display: inline-block;
-      margin-top: 20px;
-      color: #888;
-      text-decoration: none;
-      font-weight: 500;
-    }
-    .back-link:hover { color: #fff; }
-    .user-list-item {
+
+    header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #0d0d12;
-      padding: 10px 14px;
+      padding: 20px 40px;
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(13, 13, 18, 0.8);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 1.4rem;
+      letter-spacing: 0.5px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px;
+    }
+
+    h1, h2 {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .admin-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.9rem;
+    }
+
+    th {
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .badge {
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .badge-admin { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+    .badge-banned { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .badge-active { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
+
+    .action-btns {
+      display: flex;
+      gap: 8px;
+    }
+
+    button {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 6px 12px;
       border-radius: 8px;
-      margin-bottom: 8px;
-      border: 1px solid rgba(255,255,255,0.05);
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    button:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    button.btn-danger {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.3);
+      color: #f87171;
+    }
+    button.btn-danger:hover {
+      background: rgba(239, 68, 68, 0.2);
+    }
+
+    textarea, input {
+      width: 100%;
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px;
+      color: white;
+      font-family: inherit;
+      margin-top: 8px;
+      margin-bottom: 16px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-indigo), var(--accent-purple));
+      border: none;
+      padding: 10px 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
 
-  <div class="admin-container">
-    <h1>⚙️ Admin Control Panel</h1>
-    <p style="color: #888; margin-bottom: 30px;">Manage cloud announcements and synchronized global user accounts.</p>
-
-    <!-- Announcement Manager -->
-    <div class="section-group">
-      <label for="announcement-input">Site Announcement Banner</label>
-      <textarea id="announcement-input" rows="3" placeholder="Type an announcement to display globally..."></textarea>
-      <button class="btn" onclick="saveAnnouncement()">Publish Announcement</button>
-      <button class="btn btn-danger" onclick="clearAnnouncement()" style="background: #374151; margin-left: 5px;">Remove Banner</button>
+  <header>
+    <div class="logo-area">
+      <span>⚙️</span> ADMIN DASHBOARD
     </div>
+    <div>
+      <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">← Return to Arcade</a>
+    </div>
+  </header>
 
-    <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
-
-    <!-- User Management -->
-    <div class="section-group">
-      <label>Registered Cloud Users & Bans</label>
-      <div id="users-container" style="max-height: 200px; overflow-y: auto; margin-top: 10px;">
-        <p style="color: #666; font-size: 0.9rem;">Loading users...</p>
+  <div class="container">
+    <div class="admin-grid">
+      
+      <div class="card">
+        <h2>Global Announcement Banner</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem;">Update the message displayed at the top of the arcade homepage.</p>
+        <input type="text" id="announcement-input" placeholder="Enter announcement text...">
+        <button class="btn-primary" onclick="saveAnnouncement()">Publish Announcement</button>
       </div>
-    </div>
 
-    <a href="index.html" class="back-link">← Return to Arcade</a>
+      <div class="card">
+        <h2>User Account Management</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem;">Modify credentials, toggle privileges, ban, or remove users.</p>
+        
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="user-table-body">
+              </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDf5Z8jyxVDgPuLxo4ImYBcUwaM6DlDYXM",
@@ -132,99 +217,74 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // Security check: ensure active session belongs to admin 'naahs'
     window.addEventListener('DOMContentLoaded', async () => {
       const currentUser = sessionStorage.getItem('arcade_current_user');
-      
       if (currentUser !== 'naahs') {
-        try {
-          const userDoc = await getDoc(doc(db, "arcade_users", currentUser));
-          if (!userDoc.exists() || !userDoc.data().isAdmin) {
-            alert('Access denied. Administrator privileges required.');
-            window.location.href = 'index.html';
-            return;
-          }
-        } catch (e) {
-          alert('Access denied.');
-          window.location.href = 'index.html';
-          return;
-        }
+        alert('Unauthorized access. Admins only.');
+        window.location.href = 'index.html';
+        return;
       }
 
-      try {
-        const annDoc = await getDoc(doc(db, "arcade_config", "announcement"));
-        if (annDoc.exists()) {
-          document.getElementById('announcement-input').value = annDoc.data().text || '';
-        }
-      } catch (err) {
-        console.error(err);
-      }
-
+      loadAnnouncement();
       loadUsers();
     });
 
-    window.saveAnnouncement = async function() {
-      const text = document.getElementById('announcement-input').value.trim();
+    async function loadAnnouncement() {
       try {
-        await setDoc(doc(db, "arcade_config", "announcement"), { text: text });
-        alert('Announcement published globally!');
-      } catch (err) {
-        console.error(err);
-        alert('Failed to publish announcement.');
+        const docSnap = await getDoc(doc(db, "arcade_config", "announcement"));
+        if (docSnap.exists()) {
+          document.getElementById('announcement-input').value = docSnap.data().text || '';
+        }
+      } catch (e) {
+        console.error("Error loading announcement", e);
       }
     }
 
-    window.clearAnnouncement = async function() {
+    window.saveAnnouncement = async function() {
+      const text = document.getElementById('announcement-input').value;
       try {
-        await setDoc(doc(db, "arcade_config", "announcement"), { text: "" });
-        document.getElementById('announcement-input').value = '';
-        alert('Announcement removed.');
-      } catch (err) {
-        console.error(err);
+        await setDoc(doc(db, "arcade_config", "announcement"), { text });
+        alert('Announcement updated successfully!');
+      } catch (e) {
+        alert('Error saving announcement: ' + e.message);
       }
     }
 
     async function loadUsers() {
-      const container = document.getElementById('users-container');
-      container.innerHTML = '';
-
+      const tbody = document.getElementById('user-table-body');
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Loading users...</td></tr>';
+      
       try {
         const querySnapshot = await getDocs(collection(db, "arcade_users"));
-        if (querySnapshot.empty) {
-          container.innerHTML = '<p style="color: #666; font-size: 0.9rem;">No registered users found.</p>';
+        tbody.innerHTML = '';
+        
+        if(querySnapshot.empty) {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">No users found in database.</td></tr>';
           return;
         }
 
         querySnapshot.forEach((userDoc) => {
-          const username = userDoc.id;
           const data = userDoc.data();
+          const username = userDoc.id;
+          const isAdmin = data.isAdmin || username === 'naahs';
           const isBanned = data.isBanned || false;
 
-          const item = document.createElement('div');
-          item.className = 'user-list-item';
-          item.innerHTML = `
-            <span>👤 ${username} ${isBanned ? '<span style="color: #ef4444; font-size: 0.8rem;">(Banned)</span>' : ''}</span>
-            <button class="btn ${isBanned ? '' : 'btn-danger'}" style="padding: 6px 12px; font-size: 0.85rem;" onclick="toggleBan('${username}', ${isBanned})">
-              ${isBanned ? 'Unban' : 'Ban'}
-            </button>
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>${username}</strong></td>
+            <td><span class="badge ${isAdmin ? 'badge-admin' : ''}">${isAdmin ? 'Admin' : 'User'}</span></td>
+            <td><span class="badge ${isBanned ? 'badge-banned' : 'badge-active'}">${isBanned ? 'Banned' : 'Active'}</span></td>
+            <td>
+              <div class="action-btns">
+                <button onclick="changePassword('${username}')">Password</button>
+                <button onclick="toggleAdmin('${username}', ${isAdmin})">${isAdmin ? 'Demote' : 'Make Admin'}</button>
+                <button onclick="toggleBan('${username}', ${isBanned})">${isBanned ? 'Unban' : 'Ban'}</button>
+                <button class="btn-danger" onclick="deleteUserAccount('${username}')">Delete</button>
+              </div>
+            </td>
           `;
-          container.appendChild(item);
+          tbody.appendChild(tr);
         });
-      } catch (err) {
-        console.error(err);
-        container.innerHTML = '<p style="color: #f87171; font-size: 0.9rem;">Error loading users.</p>';
-      }
-    }
-
-    window.toggleBan = async function(username, currentStatus) {
-      try {
-        const userRef = doc(db, "arcade_users", username);
-        await updateDoc(userRef, { isBanned: !currentStatus });
-        loadUsers();
-      } catch (err) {
-        console.error(err);
-        alert('Failed to update ban status.');
-      }
-    }
-  </script>
-</body>
-</html>
+      } catch (e) {
+        console.error("Error loading users:", e);
