@@ -12,19 +12,17 @@ document.addEventListener('DOMContentLoaded', () => {
     <path d="M 32 25 L 68 33 L 73 54 L 54 59 L 52 46 L 43 44 L 38 75 L 26 72 Z M 44 34 L 46 40 L 53 42 L 54 36 Z" fill="#ffffff"/>
   </svg>`;
 
-  const classroomIcon = `<svg viewBox="0 0 100 100" width="1em" height="1em" style="display: inline-block; vertical-align: middle;">
-    <rect x="10" y="15" width="80" height="70" rx="10" fill="#0f9d58"/>
-    <rect x="16" y="21" width="68" height="58" rx="6" fill="#e8f5e9"/>
-    <rect x="22" y="27" width="56" height="46" rx="4" fill="#0f9d58"/>
-    <path d="M 50 38 A 7 7 0 1 0 50 52 A 7 7 0 1 0 50 38 Z M 36 65 C 36 57 43 54 50 54 C 57 54 64 57 64 65 Z" fill="#f4b400"/>
-    <path d="M 36 42 A 5 5 0 1 0 36 52 A 5 5 0 1 0 36 42 Z M 26 63 C 26 57 31 54 36 54 C 39 54 42 55 44 57 C 42 60 41 63 41 65 L 26 65 Z" fill="#ffffff" opacity="0.9"/>
-    <path d="M 64 42 A 5 5 0 1 0 64 52 A 5 5 0 1 0 64 42 Z M 74 63 C 74 57 69 54 64 54 C 61 54 58 55 56 57 C 58 60 59 63 59 65 L 74 65 Z" fill="#ffffff" opacity="0.9"/>
+  const greenEyeIcon = `<svg viewBox="0 0 100 100" width="1em" height="1em" style="display: inline-block; vertical-align: middle;">
+    <path d="M 10 50 C 25 20, 75 20, 90 50 C 75 80, 25 80, 10 50 Z" fill="#10b981"/>
+    <circle cx="50" cy="50" r="20" fill="#065f46"/>
+    <circle cx="50" cy="50" r="10" fill="#ffffff"/>
+    <circle cx="54" cy="46" r="4" fill="#10b981"/>
   </svg>`;
 
   const launcherGames = [
     ['playtropolis', 'Playtropolis', 'Pure fun, zero ads—instant play on any device.', playtropolisIcon],
     ['pizza-edition', 'The Pizza Edition', 'Browser games with zero downloads or accounts.', '🍕'],
-    ['classroom6x', 'Classroom 6x', 'Homework done? Time for fun. Your ultimate gaming hub.', classroomIcon],
+    ['ozogames', 'OzoGames', 'Play hundreds of free unblocked games online. No downloads.', greenEyeIcon],
   ].map(([slug, title, tagline, icon]) => ({ slug, title, tagline, icon, real: true, badgeText: 'GAME LAUNCHER' }));
 
   const codexGames = [
