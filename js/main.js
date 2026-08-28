@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ['real-2048', '2048', 'The real thing — official source by Gabriele Cirulli.', '🔢'],
     ['hextris', 'Hextris', 'The real thing — official fast-paced hexagonal puzzle game.', '🔷'],
     ['space-invaders', 'Space Invaders', 'The real thing — classic retro alien defense.', '👾'],
+    ['playtropolis', 'Playtropolis', 'The real thing — official Playtropolis experience.', '🌐'],
   ].map(([slug, title, tagline, icon]) => ({ slug, title, tagline, icon, real: true }));
 
   const codexGames = [
