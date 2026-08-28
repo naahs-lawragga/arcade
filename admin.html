@@ -261,29 +261,32 @@
       tbody.innerHTML = '';
       try {
         const querySnapshot = await getDocs(collection(db, "arcade_users"));
+        let rowsHtml = '';
+        
         querySnapshot.forEach((document) => {
           const userData = document.data();
           const username = document.id;
 
-          const tr = document.createElement('tr');
-          
           let roleBadge = userData.isAdmin ? '<span class="badge badge-admin">Admin</span>' : '<span class="badge" style="background: rgba(255,255,255,0.05); color: #aaa;">User</span>';
           let statusBadge = userData.isBanned ? '<span class="badge badge-banned">Banned</span>' : '<span class="badge badge-active">Active</span>';
 
-          tr.innerHTML = `
-            <td style="font-weight: 600;">${username}</td>
-            <td>${roleBadge}</td>
-            <td>${statusBadge}</td>
-            <td>
-              <div class="action-btns">
-                <button onclick="toggleAdmin('${username}', ${!userData.isAdmin})">${userData.isAdmin ? 'Demote' : 'Make Admin'}</button>
-                <button class="btn-danger" onclick="toggleBan('${username}', ${!userData.isBanned})">${userData.isBanned ? 'Unban' : 'Ban'}</button>
-                <button class="btn-danger" onclick="deleteUser('${username}')">Delete</button>
-              </div>
-            </td>
+          rowsHtml += `
+            <tr>
+              <td style="font-weight: 600;">${username}</td>
+              <td>${roleBadge}</td>
+              <td>${statusBadge}</td>
+              <td>
+                <div class="action-btns">
+                  <button onclick="toggleAdmin('${username}', ${!userData.isAdmin})">${userData.isAdmin ? 'Demote' : 'Make Admin'}</button>
+                  <button class="btn-danger" onclick="toggleBan('${username}', ${!userData.isBanned})">${userData.isBanned ? 'Unban' : 'Ban'}</button>
+                  <button class="btn-danger" onclick="deleteUser('${username}')">Delete</button>
+                </div>
+              </td>
+            </tr>
           `;
-          tbody.appendChild(tr);
         });
+        
+        tbody.innerHTML = rowsHtml;
       } catch (err) {
         console.error("Error loading users:", err);
       }
