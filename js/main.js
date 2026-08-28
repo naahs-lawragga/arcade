@@ -8,9 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
   ].map(([slug, title, tagline, icon]) => ({ slug, title, tagline, icon, real: true, badgeText: 'REAL GAME' }));
 
   const launcherGames = [
-  ['playtropolis', 'Playtropolis', 'Pure fun, zero ads—instant play on any device.', '🌐'],
-].map(([slug, title, tagline, icon]) => ({ slug, title, tagline, icon, real: true, badgeText: 'GAME LAUNCHER' }));
-  const codexGames = [
+    ['playtropolis', 'Playtropolis', 'Pure fun, zero ads—instant play on any device.', '🌐'],
+    ['pizza-edition', 'The Pizza Edition', 'Browser games with zero downloads or accounts.', '🍕'],
+  ].map(([slug, title, tagline, icon]) => ({ slug, title, tagline, icon, real: true, badgeText: 'GAME LAUNCHER' }));  const codexGames = [
     ['snake', 'Snake', 'Eat sparks. Don’t bite your trail.', '🐍'],
     ['breakout', 'Brick Burst', 'Clear the wall with a ricochet.', '🧱'],
     ['flappy-clone', 'Flappy Bird', 'Thread the gates.', '🐦'],
