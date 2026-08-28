@@ -1,12 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
   const { loadGame, unloadGame } = window.Arcade;
 
+  // Added custom badge text ('GAME LAUNCHER') as the 5th element for playtropolis
   const classicsGames = [
     ['real-2048', '2048', 'The real thing — official source by Gabriele Cirulli.', '🔢'],
     ['hextris', 'Hextris', 'The real thing — official fast-paced hexagonal puzzle game.', '🔷'],
     ['space-invaders', 'Space Invaders', 'The real thing — classic retro alien defense.', '👾'],
-    ['playtropolis', 'Playtropolis', 'The real thing — official Playtropolis experience.', '🌐'],
-  ].map(([slug, title, tagline, icon]) => ({ slug, title, tagline, icon, real: true }));
+    ['playtropolis', 'Playtropolis', '100+ Games!', '🌐', 'GAME LAUNCHER'],
+  ].map(([slug, title, tagline, icon, badgeText]) => ({
+    slug,
+    title,
+    tagline,
+    icon,
+    real: true,
+    badgeText: badgeText || 'REAL GAME' // Fallback to 'REAL GAME' if no custom badge is set
+  }));
 
   const codexGames = [
     ['snake', 'Snake', 'Eat sparks. Don’t bite your trail.', '🐍'],
@@ -31,9 +39,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const stage = document.querySelector('#game-stage');
   const title = document.querySelector('#game-title');
 
+  // cardHTML is just the function that generates the HTML for each game card on your homepage grid!
   function cardHTML(g) {
     return `<article class="game-card">
-      ${g.real ? '<span class="badge-real">REAL GAME</span>' : ''}
+      ${g.real ? `<span class="badge-real">${g.badgeText}</span>` : ''}
       <div class="game-icon" aria-hidden="true">${g.icon}</div>
       <h2>${g.title}</h2>
       <p>${g.tagline}</p>
