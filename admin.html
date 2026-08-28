@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚙️</text></svg>">
   <style>
     :root {
       --bg-main: #0d0d12;
@@ -193,7 +194,7 @@
               </tr>
             </thead>
             <tbody id="user-table-body">
-              </tbody>
+            </tbody>
           </table>
         </div>
       </div>
@@ -207,84 +208,4 @@
 
     const firebaseConfig = {
       apiKey: "AIzaSyDf5Z8jyxVDgPuLxo4ImYBcUwaM6DlDYXM",
-      authDomain: "web-arcade-9d87c.firebaseapp.com",
-      projectId: "web-arcade-9d87c",
-      storageBucket: "web-arcade-9d87c.firebasestorage.app",
-      messagingSenderId: "295769001488",
-      appId: "1:295769001488:web:b0971a736f5c0054618495"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    // Security check: ensure active session belongs to admin 'naahs'
-    window.addEventListener('DOMContentLoaded', async () => {
-      const currentUser = sessionStorage.getItem('arcade_current_user');
-      if (currentUser !== 'naahs') {
-        alert('Unauthorized access. Admins only.');
-        window.location.href = 'index.html';
-        return;
-      }
-
-      loadAnnouncement();
-      loadUsers();
-    });
-
-    async function loadAnnouncement() {
-      try {
-        const docSnap = await getDoc(doc(db, "arcade_config", "announcement"));
-        if (docSnap.exists()) {
-          document.getElementById('announcement-input').value = docSnap.data().text || '';
-        }
-      } catch (e) {
-        console.error("Error loading announcement", e);
-      }
-    }
-
-    window.saveAnnouncement = async function() {
-      const text = document.getElementById('announcement-input').value;
-      try {
-        await setDoc(doc(db, "arcade_config", "announcement"), { text });
-        alert('Announcement updated successfully!');
-      } catch (e) {
-        alert('Error saving announcement: ' + e.message);
-      }
-    }
-
-    async function loadUsers() {
-      const tbody = document.getElementById('user-table-body');
-      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Loading users...</td></tr>';
-      
-      try {
-        const querySnapshot = await getDocs(collection(db, "arcade_users"));
-        tbody.innerHTML = '';
-        
-        if(querySnapshot.empty) {
-          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">No users found in database.</td></tr>';
-          return;
-        }
-
-        querySnapshot.forEach((userDoc) => {
-          const data = userDoc.data();
-          const username = userDoc.id;
-          const isAdmin = data.isAdmin || username === 'naahs';
-          const isBanned = data.isBanned || false;
-
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td><strong>${username}</strong></td>
-            <td><span class="badge ${isAdmin ? 'badge-admin' : ''}">${isAdmin ? 'Admin' : 'User'}</span></td>
-            <td><span class="badge ${isBanned ? 'badge-banned' : 'badge-active'}">${isBanned ? 'Banned' : 'Active'}</span></td>
-            <td>
-              <div class="action-btns">
-                <button onclick="changePassword('${username}')">Password</button>
-                <button onclick="toggleAdmin('${username}', ${isAdmin})">${isAdmin ? 'Demote' : 'Make Admin'}</button>
-                <button onclick="toggleBan('${username}', ${isBanned})">${isBanned ? 'Unban' : 'Ban'}</button>
-                <button class="btn-danger" onclick="deleteUserAccount('${username}')">Delete</button>
-              </div>
-            </td>
-          `;
-          tbody.appendChild(tr);
-        });
-      } catch (e) {
-        console.error("Error loading users:", e);
+      authDomain: "web-arcade-9d
