@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Arcade — play in your browser</title>
+  <title id="page-title">Arcade</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css"><link rel="stylesheet" href="css/game-shell.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕹️</text></svg>">
+  <link id="page-favicon" rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕹️</text></svg>">
   <style>
     /* Announcement Banner */
     #announcement-banner {
@@ -138,17 +138,55 @@
     .login-btn:hover { opacity: 0.9; }
     .auth-error { color: #f87171; font-size: 0.85rem; margin-top: 10px; display: none; }
     .auth-success { color: #22c55e; font-size: 0.85rem; margin-top: 10px; display: none; }
+
+    /* Tab Cloak Modal */
+    #cloak-modal {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(10, 10, 15, 0.85);
+      backdrop-filter: blur(8px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+    }
+    .cloak-card {
+      background: #161622;
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 30px;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+    .cloak-card h3 { color: #fff; font-family: 'Space Grotesk', sans-serif; margin-top: 0; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+    .cloak-presets { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+    .preset-btn {
+      background: #0d0d12;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-weight: 500;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .preset-btn:hover { border-color: #6366f1; background: #1c1c2e; }
+    .close-cloak { background: none; border: none; color: #888; font-size: 1.2rem; cursor: pointer; }
+    .close-cloak:hover { color: #fff; }
   </style>
 </head>
 <body>
 
-  <!-- Dynamic Announcement Banner -->
   <div id="announcement-banner"></div>
 
-  <!-- Sign Out Door Button -->
   <button id="signout-btn" onclick="promptSignOut()">🚪 ➔ Sign Out</button>
 
-  <!-- Sign Out Confirmation Modal -->
   <div id="signout-modal">
     <div class="confirm-card">
       <h3>Are you sure you want to sign out?</h3>
@@ -159,7 +197,32 @@
     </div>
   </div>
 
-  <!-- Login / Sign Up Overlay -->
+  <div id="cloak-modal">
+    <div class="cloak-card">
+      <h3><span>🕵️ Tab Cloak</span> <button class="close-cloak" onclick="toggleCloakModal(false)">&times;</button></h3>
+      <p style="color: #888; font-size: 0.85rem; margin-top: 0; margin-bottom: 15px;">Disguise your browser tab instantly using presets or custom settings.</p>
+      
+      <label style="font-size: 0.85rem; font-weight: 600; color: #aaa; margin-bottom: 6px; display: block;">Quick Presets</label>
+      <div class="cloak-presets">
+        <button class="preset-btn" onclick="applyPreset('Google Classroom', 'https://ssl.gstatic.com/classroom/ic_product_classroom_144.png')">📚 Classroom</button>
+        <button class="preset-btn" onclick="applyPreset('Google Docs', 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%234285F4%22><path d=%22M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z%22/></svg>')">📄 Google Docs</button>
+        <button class="preset-btn" onclick="applyPreset('Google Drive', 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 87.3 78%22><path d=%22M6.6 66.85l3.85 6.65c.8 1.4 2.15 2.25 3.65 2.25h54.9c1.5 0 2.85-.85 3.65-2.25l3.85-6.65-29.85-51.65h-19.1z%22 fill=%22%230066da%22/><path d=%22M43.75 15.2l29.85 51.65h-59.7z%22 fill=%22%232684fc%22/><path d=%22M26.75 62.1l17-29.45 17 29.45z%22 fill=%22%2300ac47%22/><path d=%22M14.1 68.95l12.65-21.9 17 29.45h-25.7c-1.5 0-2.85-.85-3.95-2.65z%22 fill=%22%23ffba00%22/><path d=%22M73.25 64.45c-.8 1.4-2.15 2.25-3.65 2.25h-25.7l17-29.45 12.35 21.4c.5.9.8 1.9.3 5.8z%22 fill=%22%230066da%22/></svg>')">📁 Google Drive</button>
+        <button class="preset-btn" onclick="applyPreset('Gmail', 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico')">✉️ Gmail</button>
+      </div>
+
+      <label style="font-size: 0.85rem; font-weight: 600; color: #aaa; margin-bottom: 6px; display: block;">Custom Title</label>
+      <input type="text" id="cloak-title-input" class="login-input" placeholder="Enter custom tab title...">
+      
+      <label style="font-size: 0.85rem; font-weight: 600; color: #aaa; margin-bottom: 6px; display: block;">Custom Favicon URL</label>
+      <input type="text" id="cloak-icon-input" class="login-input" placeholder="Paste image icon URL...">
+      
+      <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <button class="login-btn" onclick="saveCustomCloak()">Apply Cloak</button>
+        <button class="login-btn" onclick="resetCloak()" style="background: #2a2a3c;">Reset</button>
+      </div>
+    </div>
+  </div>
+
   <div id="login-overlay">
     <div class="login-card">
       <div class="auth-tabs">
@@ -167,7 +230,6 @@
         <button class="auth-tab" id="tab-signup" onclick="switchTab('signup')">Sign Up</button>
       </div>
 
-      <!-- Sign In Form -->
       <div id="form-signin">
         <input type="text" id="signin-user" class="login-input" placeholder="Username">
         <input type="password" id="signin-pass" class="login-input" placeholder="Password">
@@ -175,7 +237,6 @@
         <div id="signin-error" class="auth-error"></div>
       </div>
 
-      <!-- Sign Up Form -->
       <div id="form-signup" style="display: none;">
         <input type="text" id="signup-user" class="login-input" placeholder="Choose Username">
         <input type="password" id="signup-pass" class="login-input" placeholder="Choose Password">
@@ -197,6 +258,7 @@
           <a href="#classics-section">Open-Source</a>
           <a href="#launchers-section">Game Launchers</a>
           <a href="#codex-section">Coded Originals</a>
+          <a href="#" onclick="toggleCloakModal(true)" style="color: #6366f1; font-weight: 700;">🕵️ Tab Cloak</a>
           <a href="admin.html" id="admin-nav-link" style="display: none; color: #a855f7; font-weight: 700;">⚙️ Admin Panel</a>
         </div>
       </nav>
@@ -242,7 +304,6 @@
     © 2026 Naahs Lawragga. Free to play and host under the MIT License. Do not claim as your own.
   </footer>
 
-  <!-- Firebase SDKs -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -259,7 +320,13 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // Apply saved tab cloak immediately on load
     window.addEventListener('DOMContentLoaded', async () => {
+      const savedTitle = localStorage.getItem('arcade_cloak_title');
+      const savedIcon = localStorage.getItem('arcade_cloak_icon');
+      if (savedTitle) document.getElementById('page-title').textContent = savedTitle;
+      if (savedIcon) document.getElementById('page-favicon').href = savedIcon;
+
       const signoutBtn = document.getElementById('signout-btn');
       
       try {
@@ -291,6 +358,40 @@
         }
       }
     });
+
+    window.toggleCloakModal = function(show) {
+      document.getElementById('cloak-modal').style.display = show ? 'flex' : 'none';
+    }
+
+    window.applyPreset = function(title, iconUrl) {
+      localStorage.setItem('arcade_cloak_title', title);
+      localStorage.setItem('arcade_cloak_icon', iconUrl);
+      document.getElementById('page-title').textContent = title;
+      document.getElementById('page-favicon').href = iconUrl;
+      toggleCloakModal(false);
+    }
+
+    window.saveCustomCloak = function() {
+      const title = document.getElementById('cloak-title-input').value.trim();
+      const icon = document.getElementById('cloak-icon-input').value.trim();
+      if (title) {
+        localStorage.setItem('arcade_cloak_title', title);
+        document.getElementById('page-title').textContent = title;
+      }
+      if (icon) {
+        localStorage.setItem('arcade_cloak_icon', icon);
+        document.getElementById('page-favicon').href = icon;
+      }
+      toggleCloakModal(false);
+    }
+
+    window.resetCloak = function() {
+      localStorage.removeItem('arcade_cloak_title');
+      localStorage.removeItem('arcade_cloak_icon');
+      document.getElementById('page-title').textContent = 'Arcade';
+      document.getElementById('page-favicon').href = 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕹️</text></svg>';
+      toggleCloakModal(false);
+    }
 
     window.switchTab = function(tab) {
       if (tab === 'signin') {

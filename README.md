@@ -1,56 +1,45 @@
-# Arcade
+Markdown
+# Web Arcade
 
-A **static, no-dependency browser game hub**. Every playable entry is **native DOM or Canvas code** dynamically imported into one in-page shell. It includes curated open-source classics, external web game launchers, and custom-built arcade games.
+A fast, lightweight, and modern browser-based arcade featuring open-source adaptations, multi-game launchers, custom-coded original games, and a built-in **Tab Cloak** tool. Built with vanilla web technologies and integrated with Firebase for cloud-based user authentication, global announcements, and admin controls.
 
-## Run locally & deployment
+## Features
 
-1. **Extract the folder:** Unzip or extract the downloaded arcade folder before attempting to run or deploy it.
-2. **Run locally:** Open **`index.html`** directly in a modern browser, or serve the **`arcade/`** folder with any static web server. Both paths work; the loader uses ordinary local scripts so a double-click does not run into browser module restrictions.
-3. **Deploy online:** Upload this extracted folder to **Vercel**, **Netlify**, or any free hosting website to get a live domain. Vercel hosting is recommended because Vercel domains are typically unblocked on school networks, allowing you to access your arcade anywhere.
-4. **Google Sites / Presentation embedding:** Because security policies block direct iframe embedding of external websites or folders, you can add your hosted Vercel link onto a Google Sites page or slide deck using a clean launcher button or external link.
+- **Native Game Shell:** Runs open-source games and custom creations directly in the browser without clunky embeds.
+- **Tab Cloak System:** Built-in menu allowing users to instantly disguise the browser tab title and favicon using popular presets (Google Classroom, Docs, Drive, Gmail) or custom inputs.
+- **Cloud Authentication & User Management:** Secure sign-up, sign-in, session tracking, and account ban management backed by Firestore.
+- **Global Announcements:** Dynamic announcement banner system controlled instantly via the admin panel.
+- **Admin Control Panel:** Dedicated dashboard (`admin.html`) restricted to administrators to broadcast banners and manage registered user accounts.
+- **Responsive & Sleek UI:** Styled with Google Fonts (`Space Grotesk` and `Inter`) and a modern dark aesthetic.
 
-## Game Categories
+## Project Structure
 
-### Open-Source
+```text
+├── index.html        # Main arcade hub, login overlay, tab cloak, and game loader
+├── admin.html        # Administrator control panel for announcements & user bans
+├── css/              # Stylesheets for the shell, layout, and components
+└── js/               # Modular JavaScript scripts for game loading and shared utilities
+Setup & Hosting
+1. Repository Setup
+Clone or download this repository to your local machine, or open it directly in your code editor.
 
-| Game | Description | Status |
-| --- | --- | --- |
-| **2048** | The real thing — official source by Gabriele Cirulli. | Real Game |
-| **Hextris** | The real thing — official fast-paced hexagonal puzzle game. | Real Game |
-| **Space Invaders** | The real thing — classic retro alien defense. | Real Game |
+2. Configure Firebase Cloud Database
+Go to the Firebase Console and create or open your project.
 
-### Game Launchers
+Under Firestore Database, create a database and set your security rules to allow read/write access:
 
-| Launcher | Description | Status |
-| --- | --- | --- |
-| **Playtropolis** | Pure fun, zero ads—instant play on any device. | Game Launcher |
-| **The Pizza Edition** | Browser games with zero downloads or accounts. | Game Launcher |
+JavaScript
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
+Copy your project's firebaseConfig object and ensure it is correctly inserted into the script initialization blocks in both index.html and admin.html.
 
-### Coded Originals
+3. Hosting Locally or Live
+Local Testing: Run the project using a local development server (such as the Live Server extension in VS Code) to test Firestore cloud syncing and authentication.
 
-| Game | Description | Status |
-| --- | --- | --- |
-| **Snake** | Eat sparks. Don't bite your trail. | Coded Original |
-| **Brick Burst** | Clear the wall with a ricochet. | Coded Original |
-| **Flappy Bird** | Thread the gates. | Coded Original |
-| **Tetris** | Stack, clear, survive. | Coded Original |
-| **Pong** | A two-paddle classic. | Coded Original |
-| **Tic-Tac-Toe** | Take on the arcade brain. | Coded Original |
-| **Memory Match** | Turn over every pair. | Coded Original |
-| **Duel Lite** | Couch-versus brawl. | Coded Original |
-| **Lucky Lights** | A tiny purely-for-fun spinner. | Coded Original |
-| **Night Watch** | Keep the lantern alive. | Coded Original |
-| **JagDev Runner** | Dodge, jump, and dash through the course. | Coded Original |
-
-## Architecture
-
-* **`js/main.js`** owns the game catalog, client-side view switching, and route hash.
-* **`js/gameLoader.js`** loads a game script on demand and calls its `init(container)` function; changing games calls `destroy()` and removes its stylesheet.
-* **`js/shared/input.js`** centralizes keyboard state plus swipe detection.
-* **`js/shared/storage.js`** persists each game’s best score with namespaced `localStorage` keys.
-
-## License
-
-Copyright © 2026 Naahs Lawragga.
-
-This project is released under the **MIT License**. You are free to use, play, and host this project free of charge. However, you may not pass this project off as your own original creation. Anyone hosting or distributing this code must include the original copyright notice and credit to Naahs Lawragga, as detailed in the `LICENSE` file.
+Static Deployment: Host your files on any static hosting provider such as GitHub Pages, Vercel, or Netlify by pointing your production deployment directly to the root directory of the repository.
