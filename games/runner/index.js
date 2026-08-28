@@ -1,4 +1,111 @@
-(function(){
-const{createInput}=window.ArcadeInput;const{highScore,saveHighScore}=window.ArcadeStorage;
-window.ArcadeGames=window.ArcadeGames||{};window.ArcadeGames['runner']={init(host){host.innerHTML='<div class="game-root"><div class="game-hud"><span>Distance <strong id="s">0</strong></span><span>Best <strong id="b"></strong></span></div><canvas width="620" height="330"></canvas><p class="hint">Space / tap to jump</p></div>';const c=host.querySelector('canvas'),g=c.getContext('2d'),i=createInput(),s=host.querySelector('#s'),b=host.querySelector('#b');let y=245,v=0,blocks=[],t=0,score=0,over=false,prev=false,raf;b.textContent=highScore('runner');const jump=()=>{if(y>=245)v=-10};c.addEventListener('pointerdown',jump);function f(){const now=i.down(' ');if(now&&!prev)jump();prev=now;v+=.55;y=Math.min(245,y+v);t++;if(t%85===0)blocks.push({x:620,w:20+Math.random()*28});blocks.forEach(o=>{o.x-=5;if(o.x<100&&o.x+o.w>70&&y+40>270)over=true});score++;s.textContent=score;b.textContent=saveHighScore('runner',score);g.fillStyle='#101735';g.fillRect(0,0,620,330);g.fillStyle='#59648f';g.fillRect(0,285,620,8);g.fillStyle='#ffe66d';g.fillRect(70,y,28,40);g.fillStyle='#ff4e9b';blocks.forEach(o=>g.fillRect(o.x,270,o.w,15));if(!over)raf=requestAnimationFrame(f);else{g.fillStyle='white';g.font='bold 25px system-ui';g.fillText('Dash over',245,150)}}f();return{destroy(){cancelAnimationFrame(raf);i.dispose();c.removeEventListener('pointerdown',jump)}}}}
+window.GameModule = (function () {
+  let container, canvas, ctx, animId;
+  let currentLane, isJumping, jumpY, jumpVel, score, obstacles, gameOver;
+  const lanes = [100, 200, 300]; // X positions for left, center, right lanes
+
+  function handleKeydown(e) {
+    if (gameOver && e.code === 'Space') { reset(); return; }
+    if (e.code === 'ArrowLeft' || e.code === 'KeyA') currentLane = Math.max(0, currentLane - 1);
+    if (e.code === 'ArrowRight' || e.code === 'KeyD') currentLane = Math.min(2, currentLane + 1);
+    if ((e.code === 'Space' || e.code === 'ArrowUp') && !isJumping) {
+      isJumping = true;
+      jumpVel = 12;
+    }
+  }
+
+  function reset() {
+    currentLane = 1;
+    isJumping = false;
+    jumpY = 0;
+    jumpVel = 0;
+    score = 0;
+    obstacles = [];
+    gameOver = false;
+  }
+
+  function loop() {
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Track Lines
+    ctx.strokeStyle = '#334155';
+    ctx.setLineDash([10, 10]);
+    [150, 250].forEach(x => {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+    });
+    ctx.setLineDash([]);
+
+    if (!gameOver) {
+      score++;
+      if (isJumping) {
+        jumpY += jumpVel;
+        jumpVel -= 0.8;
+        if (jumpY <= 0) { jumpY = 0; isJumping = false; }
+      }
+
+      if (Math.random() < 0.03) {
+        obstacles.push({ lane: Math.floor(Math.random() * 3), y: -40 });
+      }
+
+      obstacles.forEach((obs, index) => {
+        obs.y += 6;
+        if (obs.y > canvas.height) obstacles.splice(index, 1);
+
+        // Check collision near player baseline (y ≈ 450)
+        if (obs.lane === currentLane && obs.y > 420 && obs.y < 480 && jumpY < 25) {
+          gameOver = true;
+        }
+      });
+    }
+
+    // Render Obstacles
+    ctx.fillStyle = '#ef4444';
+    obstacles.forEach(obs => {
+      ctx.fillRect(lanes[obs.lane] - 20, obs.y, 40, 40);
+    });
+
+    // Render JagDev Player
+    const playerX = lanes[currentLane];
+    const playerY = 450 - jumpY;
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(playerX - 15, playerY - 30, 30, 30);
+
+    // Score & Controls Overlay
+    ctx.fillStyle = '#fff';
+    ctx.font = '20px monospace';
+    ctx.fillText(`Distance: ${score}m`, 10, 30);
+
+    if (gameOver) {
+      ctx.fillStyle = 'rgba(0,0,0,0.6)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'center';
+      ctx.font = 'bold 24px sans-serif';
+      ctx.fillText('JagDev Crashed!', canvas.width / 2, canvas.height / 2 - 10);
+      ctx.font = '16px sans-serif';
+      ctx.fillText('Press Space to Restart', canvas.width / 2, canvas.height / 2 + 25);
+      ctx.textAlign = 'left';
+    }
+
+    animId = requestAnimationFrame(loop);
+  }
+
+  return {
+    init(host) {
+      container = host;
+      canvas = document.createElement('canvas');
+      canvas.width = 400;
+      canvas.height = 500;
+      container.appendChild(canvas);
+      ctx = canvas.getContext('2d');
+      reset();
+      window.addEventListener('keydown', handleKeydown);
+      loop();
+    },
+    destroy() {
+      cancelAnimationFrame(animId);
+      window.removeEventListener('keydown', handleKeydown);
+      if (container) container.innerHTML = '';
+    }
+  };
 })();
