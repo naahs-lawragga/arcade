@@ -9,6 +9,9 @@
       canvas.height = 500;
       canvas.style.display = 'block';
       canvas.style.margin = '0 auto';
+      canvas.style.border = '2px solid rgba(139, 92, 246, 0.3)';
+      canvas.style.borderRadius = '12px';
+      canvas.style.boxShadow = '0 0 20px rgba(139, 92, 246, 0.15)';
       container.appendChild(canvas);
       const ctx = canvas.getContext('2d');
 
@@ -28,7 +31,7 @@
       }
 
       function loop() {
-        ctx.fillStyle = '#70c5ce';
+        ctx.fillStyle = '#0b0d19';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         if (!gameOver) {
@@ -58,25 +61,32 @@
           if (birdY < 0 || birdY > canvas.height) gameOver = true;
         }
 
-        ctx.fillStyle = '#22c55e';
+        // Purple Obstacles/Pipes
+        ctx.fillStyle = '#8b5cf6';
+        ctx.shadowColor = '#8b5cf6';
+        ctx.shadowBlur = 6;
         pipes.forEach(pipe => {
           ctx.fillRect(pipe.x, 0, pipeWidth, pipe.top);
           ctx.fillRect(pipe.x, pipe.top + pipeGap, pipeWidth, canvas.height - pipe.top - pipeGap);
         });
 
-        ctx.fillStyle = '#eab308';
+        // Cyan Glowing Player Bird
+        ctx.fillStyle = '#38bdf8';
+        ctx.shadowColor = '#06b6d4';
+        ctx.shadowBlur = 10;
         ctx.beginPath();
         ctx.arc(100, birdY, 14, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.fillStyle = '#fff';
-        ctx.font = 'bold 28px sans-serif';
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = 'bold 24px monospace';
         ctx.fillText(`Score: ${score}`, 20, 40);
 
         if (gameOver) {
-          ctx.fillStyle = 'rgba(0,0,0,0.5)';
+          ctx.fillStyle = 'rgba(11, 13, 25, 0.85)';
           ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.fillStyle = '#fff';
+          ctx.fillStyle = '#f8fafc';
           ctx.textAlign = 'center';
           ctx.font = '20px sans-serif';
           ctx.fillText('Game Over! Click or Space to Restart', canvas.width / 2, canvas.height / 2);
