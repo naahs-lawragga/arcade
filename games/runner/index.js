@@ -9,6 +9,9 @@
       canvas.height = 500;
       canvas.style.display = 'block';
       canvas.style.margin = '0 auto';
+      canvas.style.border = '2px solid rgba(139, 92, 246, 0.3)';
+      canvas.style.borderRadius = '12px';
+      canvas.style.boxShadow = '0 0 20px rgba(139, 92, 246, 0.15)';
       container.appendChild(canvas);
       const ctx = canvas.getContext('2d');
 
@@ -31,10 +34,11 @@
       }
 
       function loop() {
-        ctx.fillStyle = '#0f172a';
+        ctx.fillStyle = '#0b0d19';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        ctx.strokeStyle = '#334155';
+        // Lane Lines (Purple Accent)
+        ctx.strokeStyle = 'rgba(139, 92, 246, 0.25)';
         ctx.setLineDash([10, 10]);
         [150, 250].forEach(x => {
           ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
@@ -49,14 +53,13 @@
             if (jumpY <= 0) { jumpY = 0; isJumping = false; }
           }
 
-          // Slower obstacle spawn rate
           if (Math.random() < 0.018) {
             obstacles.push({ lane: Math.floor(Math.random() * 3), y: -40 });
           }
 
           for (let i = obstacles.length - 1; i >= 0; i--) {
             const obs = obstacles[i];
-            obs.y += 3.5; // Slower movement speed
+            obs.y += 3.5;
             if (obs.y > canvas.height) obstacles.splice(i, 1);
 
             if (obs.lane === currentLane && obs.y > 420 && obs.y < 480 && jumpY < 25) {
@@ -65,28 +68,36 @@
           }
         }
 
-        ctx.fillStyle = '#ef4444';
+        // Obstacles (Red-Pink Neon)
+        ctx.fillStyle = '#f43f5e';
+        ctx.shadowColor = '#f43f5e';
+        ctx.shadowBlur = 8;
         obstacles.forEach(obs => {
           ctx.fillRect(lanes[obs.lane] - 20, obs.y, 40, 40);
         });
 
+        // Player (Purple/Cyan Glow)
         const playerX = lanes[currentLane];
         const playerY = 450 - jumpY;
-        ctx.fillStyle = '#38bdf8';
+        ctx.fillStyle = '#a855f7';
+        ctx.shadowColor = '#c084fc';
+        ctx.shadowBlur = 12;
         ctx.fillRect(playerX - 15, playerY - 30, 30, 30);
 
-        ctx.fillStyle = '#fff';
-        ctx.font = '20px monospace';
-        ctx.fillText(`Distance: ${score}m`, 10, 30);
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = 'bold 18px monospace';
+        ctx.fillText(`Distance: ${score}m`, 15, 30);
 
         if (gameOver) {
-          ctx.fillStyle = 'rgba(0,0,0,0.6)';
+          ctx.fillStyle = 'rgba(11, 13, 25, 0.85)';
           ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.fillStyle = '#fff';
+          ctx.fillStyle = '#f8fafc';
           ctx.textAlign = 'center';
           ctx.font = 'bold 24px sans-serif';
           ctx.fillText('JagDev Crashed!', canvas.width / 2, canvas.height / 2 - 10);
           ctx.font = '16px sans-serif';
+          ctx.fillStyle = '#94a3b8';
           ctx.fillText('Press Space to Restart', canvas.width / 2, canvas.height / 2 + 25);
           ctx.textAlign = 'left';
         }
