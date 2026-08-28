@@ -48,6 +48,6 @@ A **static, no-dependency browser game hub**. Every playable entry is **native D
 
 ## License
 
-Copyright © 2026 Shaan Aggarwal.
+Copyright © 2026 Naahs Lawragga.
 
-This project is released under the **MIT License**. You are free to use, play, and host this project free of charge. However, you may not pass this project off as your own original creation. Anyone hosting or distributing this code must include the original copyright notice and credit to Shaan Aggarwal, as detailed in the `LICENSE` file.
+This project is released under the **MIT License**. You are free to use, play, and host this project free of charge. However, you may not pass this project off as your own original creation. Anyone hosting or distributing this code must include the original copyright notice and credit to Naahs Lawragga, as detailed in the `LICENSE` file.
