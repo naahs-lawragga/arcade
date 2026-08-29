@@ -110,6 +110,7 @@
     .action-btns {
       display: flex;
       gap: 8px;
+      flex-wrap: wrap;
     }
 
     button {
@@ -181,7 +182,7 @@
 
       <div class="card">
         <h2>User Account Management</h2>
-        <p style="color: var(--text-muted); font-size: 0.85rem;">Modify credentials, toggle privileges, ban, or remove users.</p>
+        <p style="color: var(--text-muted); font-size: 0.85rem;">Modify credentials, toggle privileges, ban, or delete user accounts.</p>
         
         <div style="overflow-x: auto;">
           <table>
@@ -218,7 +219,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Check admin access on load
     window.addEventListener('DOMContentLoaded', async () => {
       const currentUser = sessionStorage.getItem('arcade_current_user');
       if (!currentUser) {
@@ -279,7 +279,7 @@
                 <div class="action-btns">
                   <button onclick="toggleAdmin('${username}', ${!userData.isAdmin})">${userData.isAdmin ? 'Demote' : 'Make Admin'}</button>
                   <button class="btn-danger" onclick="toggleBan('${username}', ${!userData.isBanned})">${userData.isBanned ? 'Unban' : 'Ban'}</button>
-                  <button class="btn-danger" onclick="deleteUser('${username}')">Delete</button>
+                  <button class="btn-danger" onclick="deleteUserAccount('${username}')" style="background: #3f1515;">Delete</button>
                 </div>
               </td>
             </tr>
@@ -320,19 +320,20 @@
       }
     };
 
-    window.deleteUser = async function(username) {
+    window.deleteUserAccount = async function(username) {
       if (username === 'naahs') {
         alert("You cannot delete the master account.");
         return;
       }
-      if (confirm(`Are you sure you want to delete user "${username}"?`)) {
-        try {
-          await deleteDoc(doc(db, "arcade_users", username));
-          loadUsers();
-        } catch (err) {
-          console.error(err);
-          alert('Error deleting user.');
-        }
+      if (!confirm(`Are you sure you want to completely delete the account '${username}'? This cannot be undone.`)) {
+        return;
+      }
+      try {
+        await deleteDoc(doc(db, "arcade_users", username));
+        loadUsers();
+      } catch (err) {
+        console.error(err);
+        alert('Error deleting user account.');
       }
     };
   </script>
