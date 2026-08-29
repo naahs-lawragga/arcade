@@ -139,31 +139,6 @@
     .auth-error { color: #f87171; font-size: 0.85rem; margin-top: 10px; display: none; }
     .auth-success { color: #22c55e; font-size: 0.85rem; margin-top: 10px; display: none; }
 
-    /* Category Navigation Tabs on Homepage */
-    .category-tabs {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin: 20px 0 30px;
-      flex-wrap: wrap;
-    }
-    .cat-tab {
-      background: #161622;
-      border: 1px solid rgba(255,255,255,0.1);
-      color: #9ca3af;
-      padding: 10px 20px;
-      border-radius: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .cat-tab.active {
-      background: linear-gradient(135deg, #6366f1, #a855f7);
-      color: white;
-      border-color: transparent;
-      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-    }
-
     /* Tab Cloak Modal */
     #cloak-modal {
       position: fixed;
@@ -204,28 +179,6 @@
     .preset-btn:hover { border-color: #6366f1; background: #1c1c2e; }
     .close-cloak { background: none; border: none; color: #888; font-size: 1.2rem; cursor: pointer; }
     .close-cloak:hover { color: #fff; }
-
-    /* School WiFi Unblocker Toolbar inside Game Stage */
-    .wifi-bypass-bar {
-      background: #161622;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      padding: 8px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.85rem;
-      color: #9ca3af;
-    }
-    .bypass-btn {
-      background: rgba(99, 102, 241, 0.15);
-      border: 1px solid rgba(99, 102, 241, 0.3);
-      color: #a5b4fc;
-      padding: 4px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    .bypass-btn:hover { background: rgba(99, 102, 241, 0.3); }
   </style>
 </head>
 <body>
@@ -302,9 +255,9 @@
           <span class="brand-name">ARCADE</span>
         </div>
         <div class="nav-links">
-          <a href="#" onclick="switchCategory('classics')">Open-Source</a>
-          <a href="#" onclick="switchCategory('launchers')">Game Launchers</a>
-          <a href="#" onclick="switchCategory('codex')">Coded Originals</a>
+          <a href="#classics-section">Open-Source</a>
+          <a href="#launchers-section">Game Launchers</a>
+          <a href="#codex-section">Coded Originals</a>
           <a href="#" onclick="toggleCloakModal(true)" style="color: #6366f1; font-weight: 700;">🕵️ Tab Cloak</a>
           <a href="admin.html" id="admin-nav-link" style="display: none; color: #a855f7; font-weight: 700;">⚙️ Admin Panel</a>
         </div>
@@ -314,13 +267,6 @@
         <h1 id="arcade-title">ARCADE</h1>
       </header>
 
-      <!-- Category Navigation Filter Tabs -->
-      <div class="category-tabs">
-        <button class="cat-tab active" id="btn-cat-classics" onclick="switchCategory('classics')">🎮 Open-Source Games</button>
-        <button class="cat-tab" id="btn-cat-launchers" onclick="switchCategory('launchers')">🚀 Game Launchers</button>
-        <button class="cat-tab" id="btn-cat-codex" onclick="switchCategory('codex')">✨ Coded Originals</button>
-      </div>
-
       <section class="game-section" id="classics-section">
         <div class="section-heading">
           <h2>Open-Source</h2>
@@ -328,14 +274,14 @@
         <div id="classics-grid" class="game-grid" aria-live="polite"></div>
       </section>
 
-      <section class="game-section" id="launchers-section" style="display: none;">
+      <section class="game-section" id="launchers-section">
         <div class="section-heading">
           <h2>Game Launchers</h2>
         </div>
         <div id="launchers-grid" class="game-grid" aria-live="polite"></div>
       </section>
 
-      <section class="game-section" id="codex-section" style="display: none;">
+      <section class="game-section" id="codex-section">
         <div class="section-heading">
           <h2>Coded Originals</h2>
         </div>
@@ -345,10 +291,6 @@
 
     <section id="play-view" hidden aria-live="polite">
       <header class="game-bar"><button id="back-button" class="back-button">← Back to Arcade</button><div><p class="eyebrow">NOW PLAYING</p><h2 id="game-title"></h2></div><button id="restart-button" class="restart-button">Restart</button></header>
-      <div class="wifi-bypass-bar" id="wifi-bypass-bar" style="display:none;">
-        <span>🛡️ School WiFi blocked this launcher? Toggle bypass mode:</span>
-        <button class="bypass-btn" onclick="toggleLauncherBypass()">Switch to Proxy Frame</button>
-      </div>
       <div id="game-stage" class="game-stage"></div>
     </section>
   </main>
@@ -373,6 +315,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // Apply saved tab cloak immediately on load
     window.addEventListener('DOMContentLoaded', async () => {
       const savedTitle = localStorage.getItem('arcade_cloak_title');
       const savedIcon = localStorage.getItem('arcade_cloak_icon');
@@ -410,16 +353,6 @@
         }
       }
     });
-
-    window.switchCategory = function(category) {
-      document.getElementById('classics-section').style.display = (category === 'classics') ? 'block' : 'none';
-      document.getElementById('launchers-section').style.display = (category === 'launchers') ? 'block' : 'none';
-      document.getElementById('codex-section').style.display = (category === 'codex') ? 'block' : 'none';
-
-      document.getElementById('btn-cat-classics').classList.toggle('active', category === 'classics');
-      document.getElementById('btn-cat-launchers').classList.toggle('active', category === 'launchers');
-      document.getElementById('btn-cat-codex').classList.toggle('active', category === 'codex');
-    }
 
     window.toggleCloakModal = function(show) {
       document.getElementById('cloak-modal').style.display = show ? 'flex' : 'none';
@@ -558,7 +491,7 @@
         successDiv.style.display = 'block';
         errorDiv.style.display = 'none';
 
-        document.getElementById('signup-user').value = '
+        document.getElementById('signup-user').value = '';
         document.getElementById('signup-pass').value = '';
       } catch (err) {
         console.error(err);
@@ -579,21 +512,6 @@
     window.confirmSignOut = function() {
       sessionStorage.removeItem('arcade_current_user');
       location.reload();
-    }
-
-    window.toggleLauncherBypass = function() {
-      const stage = document.getElementById('game-stage');
-      const iframe = stage.querySelector('iframe');
-      if (iframe) {
-        const currentSrc = iframe.src;
-        if (currentSrc.includes('https://api.allorigins.win/raw?url=')) {
-          iframe.src = decodeURIComponent(currentSrc.split('url=')[1]);
-          document.querySelector('.bypass-btn').textContent = 'Switch to Proxy Frame';
-        } else {
-          iframe.src = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(currentSrc);
-          document.querySelector('.bypass-btn').textContent = 'Switch to Direct Embed';
-        }
-      }
     }
   </script>
 
